@@ -70,7 +70,6 @@ public class KCBQThreadPoolExecutor extends ThreadPoolExecutor {
                    throwable.getMessage());
       logger.debug("Error Task Stacktrace:", throwable);
       encounteredErrors.add(throwable);
-      throw new BigQueryConnectException(throwable);
     }
   }
 
