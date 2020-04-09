@@ -85,6 +85,8 @@ public class TableWriter implements Runnable {
           if (isBatchSizeError(err)) {
             failureCount++;
             currentBatchSize = getNewBatchSize(currentBatchSize);
+          } else {
+            throw err;
           }
         }
       }
