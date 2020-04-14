@@ -324,6 +324,7 @@ public class BigQuerySinkTaskTest {
     testTask.start(properties);
 
     testTask.put(Collections.singletonList(spoofSinkRecord(topic)));
+    testTask.flush(Collections.emptyMap());
   }
 
 
