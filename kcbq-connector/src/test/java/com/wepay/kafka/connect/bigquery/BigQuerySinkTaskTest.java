@@ -310,11 +310,10 @@ public class BigQuerySinkTaskTest {
 
     SinkTaskContext sinkTaskContext = mock(SinkTaskContext.class);
     InsertAllResponse insertAllResponse = mock(InsertAllResponse.class);
-
-    when(bigQuery.insertAll(any())).thenThrow(new BigQueryException(
-        400, "no such field",
-        new BigQueryError("no such field", "us-central1", "")));
+    when(bigQuery.insertAll(any())).thenReturn(insertAllResponse);
     when(insertAllResponse.hasErrors()).thenReturn(true);
+    when(insertAllResponse.getInsertErrors()).thenReturn(Collections.singletonMap(
+       0L, Collections.singletonList(new BigQueryError("no such field", "us-central1", ""))));
 
     SchemaRetriever schemaRetriever = mock(SchemaRetriever.class);
     SchemaManager schemaManager = mock(SchemaManager.class);
