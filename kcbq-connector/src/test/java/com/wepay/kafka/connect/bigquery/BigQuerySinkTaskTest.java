@@ -298,7 +298,7 @@ public class BigQuerySinkTaskTest {
   }
 
   @Test(expected = BigQueryConnectException.class)
-  public void testSimplePutException() {
+  public void testSimplePutException() throws InterruptedException {
     final String topic = "test-topic";
 
     Map<String, String> properties = propertiesFactory.getProperties();
@@ -323,7 +323,8 @@ public class BigQuerySinkTaskTest {
     testTask.start(properties);
 
     testTask.put(Collections.singletonList(spoofSinkRecord(topic)));
-    testTask.flush(Collections.emptyMap());
+    Thread.sleep(100);
+    testTask.put(Collections.singletonList(spoofSinkRecord(topic)));
   }
 
   // It's important that the buffer be completely wiped after a call to flush, since any execption
