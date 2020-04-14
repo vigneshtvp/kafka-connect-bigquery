@@ -327,7 +327,6 @@ public class BigQuerySinkTaskTest {
     testTask.flush(Collections.emptyMap());
   }
 
-
   // It's important that the buffer be completely wiped after a call to flush, since any execption
   // thrown during flush causes Kafka Connect to not commit the offsets for any records sent to the
   // task since the last flush
