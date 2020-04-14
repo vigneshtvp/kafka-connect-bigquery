@@ -231,7 +231,7 @@ public class BigQuerySinkTask extends SinkTask {
 
     // add tableWriters to the executor work queue
     for (TableWriterBuilder builder : tableWriterBuilders.values()) {
-      executor.submit(builder.build());
+      executor.execute(builder.build());
     }
     executor.checkError();
 
