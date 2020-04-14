@@ -113,9 +113,11 @@ public class KCBQThreadPoolExecutor extends ThreadPoolExecutor {
    * @throws BigQueryConnectException if there is any error when writing to BigQuery.
    */
   public void checkForErrors() throws BigQueryConnectException {
-    if (encounteredErrors.size() > 0) {
-      throw new BigQueryConnectException("Encountered unrecoverable errors while writing to "
-          + "BigQuery. See logs for more detail");
+    synchronized (encounteredErrors) {
+      if (encounteredErrors.size() > 0) {
+        throw new BigQueryConnectException("Encountered unrecoverable errors: "
+            + createErrorString(encounteredErrors) + "; See logs for more detail");
+      }
     }
   }
 }
