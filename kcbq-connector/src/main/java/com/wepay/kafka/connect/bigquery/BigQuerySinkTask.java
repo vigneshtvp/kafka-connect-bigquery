@@ -229,21 +229,10 @@ public class BigQuerySinkTask extends SinkTask {
       }
     }
 
-    List<Future<?>> futures = new ArrayList<>();
     // add tableWriters to the executor work queue
     for (TableWriterBuilder builder : tableWriterBuilders.values()) {
-      futures.add(executor.submit(builder.build()));
-    }
-    // Check for non-retriable errors and fail the task if any.
-    // Adding this check because any Exception thrown in flush will be ignored by the framework,
-    // which causes the connector to keep reading the same batch of records without showing any
-    // error to the user.
-    for (Future<?> future : futures) {
-      try {
-        future.get();
-      } catch (InterruptedException | ExecutionException e) {
-        throw new BigQueryConnectException(e);
-      }
+      executor.submit(builder.build());
+      executor.checkError();
     }
 
     // check if we should pause topics

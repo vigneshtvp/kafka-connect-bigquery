@@ -106,4 +106,10 @@ public class KCBQThreadPoolExecutor extends ThreadPoolExecutor {
                         .collect(Collectors.toList()));
     return String.join(", ", exceptionTypeStrings);
   }
+
+  public void checkError() throws BigQueryConnectException {
+    if (encounteredErrors.size() > 0) {
+      throw new BigQueryConnectException("Encountered errors while writing to BigQuery");
+    }
+  }
 }
