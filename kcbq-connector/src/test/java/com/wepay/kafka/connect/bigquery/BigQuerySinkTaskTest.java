@@ -297,7 +297,7 @@ public class BigQuerySinkTaskTest {
         TimestampType.NO_TIMESTAMP_TYPE, null)));
   }
 
-  @Test(expected = BigQueryConnectException.class)
+  @Test(expected = BigQueryConnectException.class, timeout = 60000L)
   public void testSimplePutException() throws InterruptedException {
     final String topic = "test-topic";
 
@@ -323,8 +323,10 @@ public class BigQuerySinkTaskTest {
     testTask.start(properties);
 
     testTask.put(Collections.singletonList(spoofSinkRecord(topic)));
-    Thread.sleep(100);
-    testTask.put(Collections.singletonList(spoofSinkRecord(topic)));
+    while (true) {
+      Thread.sleep(100);
+      testTask.put(Collections.emptyList());
+    }
   }
 
   // It's important that the buffer be completely wiped after a call to flush, since any execption
