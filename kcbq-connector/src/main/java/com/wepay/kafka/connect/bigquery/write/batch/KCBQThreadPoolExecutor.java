@@ -110,7 +110,7 @@ public class KCBQThreadPoolExecutor extends ThreadPoolExecutor {
   /**
    * Checks for BigQuery errors. No-op if there isn't any error.
    *
-   * @throws BigQueryConnectException if there is any error when writing to BigQuery.
+   * @throws BigQueryConnectException if there have been any unrecoverable errors when writing to BigQuery.
    */
   public void checkForErrors() throws BigQueryConnectException {
     synchronized (encounteredErrors) {
