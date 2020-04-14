@@ -44,7 +44,7 @@ public class KCBQThreadPoolExecutor extends ThreadPoolExecutor {
   private static final Logger logger = LoggerFactory.getLogger(KCBQThreadPoolExecutor.class);
 
 
-  private ConcurrentHashMap.KeySetView<Throwable, Boolean> encounteredErrors =
+  private final ConcurrentHashMap.KeySetView<Throwable, Boolean> encounteredErrors =
       ConcurrentHashMap.newKeySet();
 
   /**
@@ -108,8 +108,10 @@ public class KCBQThreadPoolExecutor extends ThreadPoolExecutor {
   }
 
   public void checkError() throws BigQueryConnectException {
-    if (encounteredErrors.size() > 0) {
-      throw new BigQueryConnectException("Encountered errors while writing to BigQuery");
+    synchronized (encounteredErrors) {
+      if (encounteredErrors.size() > 0) {
+        throw new BigQueryConnectException("Encountered errors while writing to BigQuery");
+      }
     }
   }
 }

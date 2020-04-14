@@ -232,8 +232,8 @@ public class BigQuerySinkTask extends SinkTask {
     // add tableWriters to the executor work queue
     for (TableWriterBuilder builder : tableWriterBuilders.values()) {
       executor.submit(builder.build());
-      executor.checkError();
     }
+    executor.checkError();
 
     // check if we should pause topics
     long queueSoftLimit = config.getLong(BigQuerySinkTaskConfig.QUEUE_SIZE_CONFIG);
