@@ -87,7 +87,7 @@ public class BigQuerySinkTask extends SinkTask {
 
   private KCBQThreadPoolExecutor executor;
   private static final int EXECUTOR_SHUTDOWN_TIMEOUT_SEC = 30;
-  
+
   private final BigQuery testBigQuery;
   private final Storage testGcs;
   private final SchemaManager testSchemaManager;
@@ -144,7 +144,7 @@ public class BigQuerySinkTask extends SinkTask {
 
     PartitionedTableId.Builder builder = new PartitionedTableId.Builder(baseTableId);
     if(usePartitionDecorator) {
-    	
+
 	  if (useMessageTimeDatePartitioning) {
 	    if (record.timestampType() == TimestampType.NO_TIMESTAMP_TYPE) {
 		  throw new ConnectException(
@@ -185,6 +185,10 @@ public class BigQuerySinkTask extends SinkTask {
   @Override
   public void put(Collection<SinkRecord> records) {
     logger.info("Putting {} records in the sink.", records.size());
+    // check for non-retriable errors and fail the task if any.
+    // adding this because any Exception thrown in flush will be ignored by the framework, which
+    // causes the connector to retry inserting the same batch of records.
+    executor.checkForErrors();
 
     // create tableWriters
     Map<PartitionedTableId, TableWriterBuilder> tableWriterBuilders = new HashMap<>();
@@ -228,10 +232,6 @@ public class BigQuerySinkTask extends SinkTask {
     for (TableWriterBuilder builder : tableWriterBuilders.values()) {
       executor.execute(builder.build());
     }
-    // check for non-retriable errors and fail the task if any.
-    // adding this because any Exception thrown in flush will be ignored by the framework, which
-    // causes the connector to retry inserting the same batch of records.
-    executor.checkForErrors();
 
     // check if we should pause topics
     long queueSoftLimit = config.getLong(BigQuerySinkTaskConfig.QUEUE_SIZE_CONFIG);
@@ -341,7 +341,7 @@ public class BigQuerySinkTask extends SinkTask {
     topicPartitionManager = new TopicPartitionManager();
     useMessageTimeDatePartitioning =
         config.getBoolean(config.BIGQUERY_MESSAGE_TIME_PARTITIONING_CONFIG);
-    usePartitionDecorator = 
+    usePartitionDecorator =
             config.getBoolean(config.BIGQUERY_PARTITION_DECORATOR_CONFIG);
     if (hasGCSBQTask) {
       startGCSToBQLoadTask();
