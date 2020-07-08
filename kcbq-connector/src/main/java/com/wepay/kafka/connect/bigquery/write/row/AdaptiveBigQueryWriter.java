@@ -99,10 +99,12 @@ public class AdaptiveBigQueryWriter extends BigQueryWriter {
       PartitionedTableId tableId,
       List<InsertAllRequest.RowToInsert> rows,
       String topic) {
+    logger.info("performing write request for {} rows", rows.size());
     InsertAllResponse writeResponse = null;
     InsertAllRequest request = null;
 
     try {
+      logger.debug("creating insert all request");
       request = createInsertAllRequest(tableId, rows);
       writeResponse = bigQuery.insertAll(request);
       // Should only perform one schema update attempt.
@@ -111,6 +113,7 @@ public class AdaptiveBigQueryWriter extends BigQueryWriter {
         attemptSchemaUpdate(tableId, topic);
       }
     } catch (BigQueryException exception) {
+      logger.warn("creation of InsertAll request failed", exception);
       // Should only perform one table creation attempt.
       if (isTableNotExistedException(exception) && autoCreateTables && bigQuery.getTable(tableId.getBaseTableId()) == null) {
         attemptTableCreate(tableId.getBaseTableId(), topic);
@@ -134,7 +137,7 @@ public class AdaptiveBigQueryWriter extends BigQueryWriter {
           writeResponse = bigQuery.insertAll(request);
         } catch (BigQueryException exception) {
           // no-op, we want to keep retrying the insert
-          logger.trace("insertion failed", exception);
+          logger.warn("insertion failed", exception);
         }
       } else {
         return writeResponse.getInsertErrors();
