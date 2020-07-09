@@ -83,6 +83,7 @@ public class SchemaManager {
     logger.info("Attempting to update table `{}` with schema {}",
         table, tableInfo.getDefinition().getSchema());
     bigQuery.update(tableInfo);
+    logger.info("Schema update was succesfull");
   }
 
   // package private for testing.

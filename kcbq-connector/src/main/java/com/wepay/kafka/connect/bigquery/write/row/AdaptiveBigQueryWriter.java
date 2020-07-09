@@ -154,6 +154,7 @@ public class AdaptiveBigQueryWriter extends BigQueryWriter {
     try {
       schemaManager.updateSchema(tableId.getBaseTableId(), topic);
     } catch (BigQueryException exception) {
+      logger.error("schema update had failed", exception);
       throw new BigQueryConnectException(
           "Failed to update table schema for: " + tableId.getBaseTableId(), exception);
     }
@@ -181,8 +182,10 @@ public class AdaptiveBigQueryWriter extends BigQueryWriter {
   private boolean onlyContainsInvalidSchemaErrors(Map<Long, List<BigQueryError>> errors) {
     boolean invalidSchemaError = false;
     for (List<BigQueryError> errorList : errors.values()) {
+
       for (BigQueryError error : errorList) {
         if (error.getReason().equals("invalid") && error.getMessage().contains("no such field")) {
+          logger.trace("encountered an invalid schema error", error);
           invalidSchemaError = true;
         } else if (!error.getReason().equals("stopped")) {
           /* if some rows are in the old schema format, and others aren't, the old schema
