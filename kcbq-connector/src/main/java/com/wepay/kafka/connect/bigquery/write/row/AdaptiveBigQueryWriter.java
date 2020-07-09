@@ -99,7 +99,6 @@ public class AdaptiveBigQueryWriter extends BigQueryWriter {
       PartitionedTableId tableId,
       List<InsertAllRequest.RowToInsert> rows,
       String topic) {
-    logger.info("performing write request for {} rows", rows.size());
     InsertAllResponse writeResponse = null;
     InsertAllRequest request = null;
 
