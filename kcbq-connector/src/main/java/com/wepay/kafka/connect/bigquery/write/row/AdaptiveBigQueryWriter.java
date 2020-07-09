@@ -104,7 +104,7 @@ public class AdaptiveBigQueryWriter extends BigQueryWriter {
     InsertAllRequest request = null;
 
     try {
-      logger.debug("creating insert all request");
+      logger.trace("creating insert all request");
       request = createInsertAllRequest(tableId, rows);
       writeResponse = bigQuery.insertAll(request);
       // Should only perform one schema update attempt.
@@ -129,6 +129,11 @@ public class AdaptiveBigQueryWriter extends BigQueryWriter {
     int attemptCount = 0;
     while (writeResponse == null || writeResponse.hasErrors()) {
       logger.trace("insertion failed");
+
+      if (writeResponse.hasErrors()) {
+        logger.trace("insertion errors: {}", writeResponse.getInsertErrors());
+      }
+
       if (writeResponse == null
           || onlyContainsInvalidSchemaErrors(writeResponse.getInsertErrors())) {
         try {
@@ -137,7 +142,7 @@ public class AdaptiveBigQueryWriter extends BigQueryWriter {
           writeResponse = bigQuery.insertAll(request);
         } catch (BigQueryException exception) {
           // no-op, we want to keep retrying the insert
-          logger.warn("insertion failed", exception);
+          logger.trace("insertion failed", exception);
         }
       } else {
         return writeResponse.getInsertErrors();
