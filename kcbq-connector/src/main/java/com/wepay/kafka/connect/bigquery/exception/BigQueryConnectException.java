@@ -52,10 +52,9 @@ public class BigQueryConnectException extends ConnectException {
     for (Map.Entry<Long, List<BigQueryError>> errorsEntry : errorsMap.entrySet()) {
       for (BigQueryError error : errorsEntry.getValue()) {
         messageBuilder.append(String.format(
-            "%n\t[row index %d]: %s: %s",
+            "\n\t[row index %d]: %s",
             errorsEntry.getKey(),
-            error.getReason(),
-            error.getMessage()
+            error
         ));
       }
     }
