@@ -1,6 +1,9 @@
 package com.wepay.kafka.connect.bigquery.utils;
 
 import java.util.Map;
+
+import com.google.protobuf.MapEntry;
+import org.apache.kafka.connect.errors.ConnectException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -74,5 +77,14 @@ public class FieldNameSanitizerTest {
 
     // Validate map size.
     assertEquals(5, sanitizedMap.size());
+  }
+
+  /**
+   * Verifies that null values are acceptable while sanitizing keys.
+   */
+  @Test
+  public void testNullValue() {
+    testMap.put("abc", null);
+    Map<String, Object> sanitizedMap = FieldNameSanitizer.replaceInvalidKeys(testMap);
   }
 }

@@ -1,5 +1,8 @@
 package com.wepay.kafka.connect.bigquery.utils;
 
+import org.apache.kafka.connect.errors.ConnectException;
+
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -21,14 +24,17 @@ public class FieldNameSanitizer {
   // Note: a.b and a/b will have the same value after sanitization which will cause Duplicate key
   // Exception.
   public static Map<String, Object> replaceInvalidKeys(Map<String, Object> map) {
-    return map.entrySet().stream().collect(Collectors.toMap(
-        (entry) -> sanitizeName(entry.getKey()),
-        (entry) -> {
-          if (entry.getValue() instanceof Map) {
-            return replaceInvalidKeys((Map<String, Object>) entry.getValue());
-          }
-          return entry.getValue();
-        }
-    ));
+    Map<String, Object> sanitizedMap = new HashMap<>();
+    for (Map.Entry<String, Object> entry : map.entrySet()) {
+      String key = sanitizeName(entry.getKey());
+      Object value;
+      if (entry.getValue() instanceof Map) {
+        value = replaceInvalidKeys((Map<String, Object>) entry.getValue());
+      } else {
+        value = entry.getValue();
+      }
+      sanitizedMap.put(key, value);
+    }
+    return sanitizedMap;
   }
 }
