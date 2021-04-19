@@ -1,0 +1,11 @@
+tools:
+  jdk: 8
+  maven: 3.5.3
+
+flows:
+  default:
+    - call: build
+
+  build:
+    - shell: |+
+        mvn clean deploy -Dmaven.test.skip=true
