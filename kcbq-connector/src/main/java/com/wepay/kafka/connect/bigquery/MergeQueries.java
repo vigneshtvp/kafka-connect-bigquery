@@ -280,7 +280,9 @@ public class MergeQueries {
     final String i = INTERMEDIATE_TABLE_ITERATION_FIELD_NAME;
     final String value = INTERMEDIATE_TABLE_VALUE_FIELD_NAME;
     final String batch = INTERMEDIATE_TABLE_BATCH_NUMBER_FIELD;
-
+    
+    logger.info("table_details{}",table(destinationTable));
+    
     return "MERGE " + table(destinationTable) + " "
         + "USING ("
           + "SELECT * FROM ("
