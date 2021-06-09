@@ -85,7 +85,7 @@ public class BigQuerySinkConnector extends SinkConnector {
     try {
       configProperties = properties;
       config = new BigQuerySinkConfig(properties);
-      logger.info("properties {}",configProperties.keySet());
+      logger.info("properties {}",configProperties.get("computeDatasetTable"));
     } catch (ConfigException err) {
       throw new SinkConfigConnectException(
           "Couldn't start BigQuerySinkConnector due to configuration error",
