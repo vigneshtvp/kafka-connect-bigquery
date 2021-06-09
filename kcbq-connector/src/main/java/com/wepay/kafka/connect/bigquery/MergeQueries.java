@@ -309,7 +309,8 @@ public class MergeQueries {
 
     logger.info("query_info {}",query);
 
-    return "MERGE " + table(destinationTable) + " "
+    return "MERGE `wmt-edw-dev`.`US_SUPPLY_CHAIN_WTMS_NONCAT_TABLES`.`transportation_load_std_charge` "
+      //+ table(destinationTable) + " "
       + "USING ("
       + "SELECT * FROM ("
       + "SELECT ARRAY_AGG("
