@@ -281,7 +281,8 @@ public class MergeQueries {
 
     logger.info("table_details{}",table(destinationTable));
 
-    String query="MERGE " + table(destinationTable) + " "
+    String query="MERGE  `wmt-edw-dev`.`US_SUPPLY_CHAIN_WTMS_NONCAT_TABLES`.`transportation_load_std_charge` "
+      //+ table(destinationTable) + " "
       + "USING ("
       + "SELECT * FROM ("
       + "SELECT ARRAY_AGG("
