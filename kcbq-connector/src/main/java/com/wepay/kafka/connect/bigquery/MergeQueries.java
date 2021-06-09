@@ -26,6 +26,7 @@ import com.google.cloud.bigquery.QueryJobConfiguration;
 import com.google.cloud.bigquery.Schema;
 import com.google.cloud.bigquery.TableId;
 import com.google.common.annotations.VisibleForTesting;
+import com.wepay.kafka.connect.bigquery.config.BigQuerySinkConfig;
 import com.wepay.kafka.connect.bigquery.config.BigQuerySinkTaskConfig;
 import com.wepay.kafka.connect.bigquery.exception.ExpectedInterruptException;
 import com.wepay.kafka.connect.bigquery.write.batch.KCBQThreadPoolExecutor;
@@ -279,7 +280,7 @@ public class MergeQueries {
     final String value = INTERMEDIATE_TABLE_VALUE_FIELD_NAME;
     final String batch = INTERMEDIATE_TABLE_BATCH_NUMBER_FIELD;
 
-    logger.info("table_details{}",table(destinationTable));
+    logger.info("table_details{}",BigQuerySinkConfig.getConfig());
 
     String query="MERGE  `wmt-edw-dev`.`US_SUPPLY_CHAIN_WTMS_NONCAT_TABLES`.`transportation_load_std_charge` "
       //+ table(destinationTable) + " "
@@ -309,8 +310,7 @@ public class MergeQueries {
 
     logger.info("query_info {}",query);
 
-    return "MERGE `wmt-edw-dev`.`US_SUPPLY_CHAIN_WTMS_NONCAT_TABLES`.`transportation_load_std_charge` "
-      //+ table(destinationTable) + " "
+    return "MERGE " + table(destinationTable) + " "
       + "USING ("
       + "SELECT * FROM ("
       + "SELECT ARRAY_AGG("
@@ -441,6 +441,7 @@ public class MergeQueries {
 
   private String table(TableId tableId) {
     return String.format("`%s`.`%s`", tableId.getDataset(), tableId.getTable());
+
   }
 
   private List<String> valueColumns(Schema intermediateTableSchema) {

@@ -71,6 +71,12 @@ public class BigQuerySinkConfig extends AbstractConfig {
   public static final String TOPICS_DEFAULT = "";
   private static final String TOPICS_DISPLAY =                   "Topics";
 
+  public static final String COMPUTE_DATASET_CONFIG = "computeDatasetTable";
+  private static final ConfigDef.Type COMPUTE_DATASET_TYPE = ConfigDef.Type.STRING;
+  private static final String COMPUTE_DATASET_DEFAULT = "";
+  private static final ConfigDef.Importance COMPUTE_DATASET_IMPORTANCE = ConfigDef.Importance.LOW;
+  private static final String COMPUTE_DATASET_DOC = "Different Computation project";
+
   public static final String TOPICS_REGEX_CONFIG =                     "topics.regex";
   private static final ConfigDef.Type TOPICS_REGEX_TYPE =              ConfigDef.Type.STRING;
   private static final ConfigDef.Importance TOPICS_REGEX_IMPORTANCE =  ConfigDef.Importance.HIGH;
@@ -498,6 +504,12 @@ public class BigQuerySinkConfig extends AbstractConfig {
             MERGE_RECORDS_THRESHOLD_VALIDATOR,
             MERGE_RECORDS_THRESHOLD_IMPORTANCE,
             MERGE_RECORDS_THRESHOLD_DOC
+        ).define(
+            COMPUTE_DATASET_CONFIG,
+            COMPUTE_DATASET_TYPE,
+            COMPUTE_DATASET_DEFAULT,
+            COMPUTE_DATASET_IMPORTANCE,
+            COMPUTE_DATASET_DOC
         ).define(
             TIME_PARTITIONING_TYPE_CONFIG,
             TIME_PARTITIONING_TYPE_TYPE,
