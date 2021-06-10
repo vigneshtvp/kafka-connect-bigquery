@@ -282,8 +282,7 @@ public class MergeQueries {
 
     logger.info("table_details{}",BigQuerySinkConfig.getConfig());
 
-    String query="MERGE  `wmt-edw-dev`.`US_SUPPLY_CHAIN_WTMS_NONCAT_TABLES`.`transportation_load_std_charge` "
-      //+ table(destinationTable) + " "
+    String query="MERGE  "+ table(destinationTable) + " "
       + "USING ("
       + "SELECT * FROM ("
       + "SELECT ARRAY_AGG("
@@ -440,8 +439,18 @@ public class MergeQueries {
   }
 
   private String table(TableId tableId) {
-    return String.format("`%s`.`%s`", tableId.getDataset(), tableId.getTable());
-
+    if(
+      (!BigQuerySinkConnector.computeTableId.isEmpty() ||
+      BigQuerySinkConnector.computeTableId != "") &&
+      tableId.getTable().indexOf(BigQuerySinkConnector.tempTableId) != -1
+    )
+    {
+      logger.info("Table details {}",BigQuerySinkConnector.computeTableId);
+      return BigQuerySinkConnector.computeTableId;
+    }
+    else {
+      return String.format("`%s`.`%s`", tableId.getDataset(), tableId.getTable());
+    }
   }
 
   private List<String> valueColumns(Schema intermediateTableSchema) {

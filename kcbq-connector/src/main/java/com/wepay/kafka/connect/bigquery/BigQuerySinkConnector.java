@@ -50,7 +50,8 @@ public class BigQuerySinkConnector extends SinkConnector {
   private final SchemaManager testSchemaManager;
 
   public static final String  GCS_BQ_TASK_CONFIG_KEY = "GCSBQTask";
-
+  public static String computeTableId = "";
+  public static String tempTableId = "";
   public BigQuerySinkConnector() {
     testBigQuery = null;
     testSchemaManager = null;
@@ -85,7 +86,9 @@ public class BigQuerySinkConnector extends SinkConnector {
     try {
       configProperties = properties;
       config = new BigQuerySinkConfig(properties);
-      logger.info("properties {}",configProperties.get("computeDatasetTable"));
+      computeTableId = configProperties.get("computeDatasetTable");
+      tempTableId = configProperties.get("intermediateTableSuffix");
+
     } catch (ConfigException err) {
       throw new SinkConfigConnectException(
           "Couldn't start BigQuerySinkConnector due to configuration error",
