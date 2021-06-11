@@ -202,6 +202,7 @@ public class SchemaManager {
     synchronized (lock(tableCreateLocks, table)) {
       if (bigQuery.getTable(table) == null) {
         logger.debug("{} doesn't exist; creating instead of updating", table(table));
+        logger.info("{} doesn't exist; creating instead of updating", table(table));
         if (createTable(table, records)) {
           return;
         }
@@ -231,6 +232,7 @@ public class SchemaManager {
           table(table), tableInfo.getDefinition().getSchema());
       try {
         bigQuery.create(tableInfo);
+        logger.info("Successfully created {}", table(table));
         logger.debug("Successfully created {}", table(table));
         schemaCache.put(table, tableInfo.getDefinition().getSchema());
         return true;

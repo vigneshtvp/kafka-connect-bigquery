@@ -88,7 +88,8 @@ public class UpsertDeleteBigQueryWriter extends AdaptiveBigQueryWriter {
       try {
         // ... and create or update the destination table here, if it doesn't already exist and auto
         // table creation is enabled
-        logger.info("Table details:{} record {}",intermediateToDestinationTables.get(tableId),records);
+        logger.info("Destination Tables {}",intermediateToDestinationTables.get(tableId));
+        logger.info("Table id {}",tableId);
         schemaManager.createOrUpdateTable(intermediateToDestinationTables.get(tableId), records);
       } catch (BigQueryException exception) {
         throw new BigQueryConnectException(
