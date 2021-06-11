@@ -443,17 +443,14 @@ public class MergeQueries {
     logger.info("BigQuerySinkConnector tempTableId {}",BigQuerySinkConnector.tempTableId);
     logger.info("BigQuerySinkConnector isempty {}",BigQuerySinkConnector.computeTableId.isEmpty());
     logger.info("BigQuerySinkConnector null {}",tableId.getTable().indexOf(BigQuerySinkConnector.tempTableId));
-    if(tableId.getTable().indexOf(BigQuerySinkConnector.tempTableId)!=-1)
+    if(tableId.getTable().indexOf(BigQuerySinkConnector.tempTableId)!=-1 || BigQuerySinkConnector.computeTableId.isEmpty()==true)
     {
       return String.format("`%s`.`%s`", tableId.getDataset(), tableId.getTable());
     }
-    else if(BigQuerySinkConnector.computeTableId.isEmpty()==false || BigQuerySinkConnector.computeTableId != "" || BigQuerySinkConnector.computeTableId != null)
+    else
     {
       logger.info("Table details {}",BigQuerySinkConnector.computeTableId);
-      return BigQuerySinkConnector.computeTableId;
-    }
-    else {
-      return String.format("`%s`.`%s`", tableId.getDataset(), tableId.getTable());
+      return String.format("`%s`.`%s`",BigQuerySinkConnector.computeTableId,tableId.getTable());
     }
   }
 
