@@ -447,7 +447,7 @@ public class MergeQueries {
     {
       return String.format("`%s`.`%s`", tableId.getDataset(), tableId.getTable());
     }
-    else if(!BigQuerySinkConnector.computeTableId.isEmpty() || !BigQuerySinkConnector.computeTableId.equals("") || BigQuerySinkConnector.computeTableId != null)
+    else if(BigQuerySinkConnector.computeTableId.isEmpty()==false || BigQuerySinkConnector.computeTableId != "" || BigQuerySinkConnector.computeTableId != null)
     {
       logger.info("Table details {}",BigQuerySinkConnector.computeTableId);
       return BigQuerySinkConnector.computeTableId;
