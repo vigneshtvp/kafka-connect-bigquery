@@ -25,7 +25,10 @@ import com.google.cloud.bigquery.TableId;
 import com.wepay.kafka.connect.bigquery.SchemaManager;
 import com.wepay.kafka.connect.bigquery.exception.BigQueryConnectException;
 import com.wepay.kafka.connect.bigquery.utils.PartitionedTableId;
+import com.wepay.kafka.connect.bigquery.write.batch.MergeBatches;
 import org.apache.kafka.connect.sink.SinkRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -33,6 +36,7 @@ import java.util.Map;
 public class UpsertDeleteBigQueryWriter extends AdaptiveBigQueryWriter {
 
   private final SchemaManager schemaManager;
+  private static final Logger logger = LoggerFactory.getLogger(UpsertDeleteBigQueryWriter.class);
   private final boolean autoCreateTables;
   private final Map<TableId, TableId> intermediateToDestinationTables;
 
@@ -84,6 +88,7 @@ public class UpsertDeleteBigQueryWriter extends AdaptiveBigQueryWriter {
       try {
         // ... and create or update the destination table here, if it doesn't already exist and auto
         // table creation is enabled
+        logger.info("Table details:{} record {}",intermediateToDestinationTables.get(tableId),records);
         schemaManager.createOrUpdateTable(intermediateToDestinationTables.get(tableId), records);
       } catch (BigQueryException exception) {
         throw new BigQueryConnectException(
