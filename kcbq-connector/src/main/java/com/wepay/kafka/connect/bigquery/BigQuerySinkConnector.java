@@ -86,7 +86,7 @@ public class BigQuerySinkConnector extends SinkConnector {
     try {
       configProperties = properties;
       config = new BigQuerySinkConfig(properties);
-      logger.info(" configProperties computeDatasetTable {}",configProperties.get("computeDatasetTable"));
+      logger.info(" configProperties computeDatasetTable {}",config.getString("computeDatasetTable"));
       computeTableId = configProperties.get("computeDatasetTable");
       tempTableId = configProperties.get("intermediateTableSuffix");
 
