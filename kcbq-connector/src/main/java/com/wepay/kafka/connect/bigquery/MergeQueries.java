@@ -112,6 +112,8 @@ public class MergeQueries {
   public void mergeFlush(TableId intermediateTable) {
     final TableId destinationTable = mergeBatches.destinationTableFor(intermediateTable);
     final int batchNumber = mergeBatches.incrementBatch(intermediateTable);
+    logger.info("vignesh destinationTable {}",destinationTable.getTable());
+    logger.info("vignesh intermediateTable {}",intermediateTable.getTable());
     logger.trace("Triggering merge flush from {} to {} for batch {}",
       intTable(intermediateTable), destTable(destinationTable), batchNumber);
 
@@ -134,6 +136,7 @@ public class MergeQueries {
       logger.debug("Running merge query on batch {} from {}",
         batchNumber, intTable(intermediateTable));
       String mergeFlushQuery = mergeFlushQuery(intermediateTable, destinationTable, batchNumber);
+      logger.info("vignesh mergeFlushQuery {}",mergeFlushQuery);
       logger.trace(mergeFlushQuery);
       bigQuery.query(QueryJobConfiguration.of(mergeFlushQuery));
       logger.trace("Merge from {} to {} completed",
