@@ -443,11 +443,11 @@ public class MergeQueries {
     logger.info("BigQuerySinkConnector tempTableId {}",BigQuerySinkConnector.tempTableId);
     logger.info("BigQuerySinkConnector isempty {}",BigQuerySinkConnector.computeTableId.isEmpty());
     logger.info("BigQuerySinkConnector null {}",tableId.getTable().indexOf(BigQuerySinkConnector.tempTableId));
-    if(
-      (!BigQuerySinkConnector.computeTableId.isEmpty() ||
-      BigQuerySinkConnector.computeTableId != "") &&
-      tableId.getTable().indexOf(BigQuerySinkConnector.tempTableId) != -1
-    )
+    if(tableId.getTable().indexOf(BigQuerySinkConnector.tempTableId)!=-1)
+    {
+      return String.format("`%s`.`%s`", tableId.getDataset(), tableId.getTable());
+    }
+    else if(!BigQuerySinkConnector.computeTableId.isEmpty() || !BigQuerySinkConnector.computeTableId.equals("") || BigQuerySinkConnector.computeTableId != null)
     {
       logger.info("Table details {}",BigQuerySinkConnector.computeTableId);
       return BigQuerySinkConnector.computeTableId;
