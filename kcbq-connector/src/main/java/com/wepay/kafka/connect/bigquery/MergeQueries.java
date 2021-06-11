@@ -441,6 +441,8 @@ public class MergeQueries {
   private String table(TableId tableId) {
     logger.info("BigQuerySinkConnector computeTableId {}",BigQuerySinkConnector.computeTableId);
     logger.info("BigQuerySinkConnector tempTableId {}",BigQuerySinkConnector.tempTableId);
+    logger.info("BigQuerySinkConnector isempty {}",BigQuerySinkConnector.computeTableId.isEmpty());
+    logger.info("BigQuerySinkConnector null {}",tableId.getTable().indexOf(BigQuerySinkConnector.tempTableId));
     if(
       (!BigQuerySinkConnector.computeTableId.isEmpty() ||
       BigQuerySinkConnector.computeTableId != "") &&
