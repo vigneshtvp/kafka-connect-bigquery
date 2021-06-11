@@ -450,7 +450,7 @@ public class MergeQueries {
     else
     {
       logger.info("Table details {}",BigQuerySinkConnector.computeTableId);
-      return String.format("`%s`.`%s`",BigQuerySinkConnector.computeTableId,tableId.getTable());
+      return String.format("%s.`%s`",BigQuerySinkConnector.computeTableId,tableId.getTable());
     }
   }
 
