@@ -132,6 +132,7 @@ public class MergeBatches {
   }
 
   public TableId destinationTableFor(TableId intermediateTable) {
+    logger.info("vignesh intermediateTable from  destinationTableFor {}",intermediateTable);
     return intermediateToDestinationTables.get(intermediateTable);
   }
 
