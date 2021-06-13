@@ -104,8 +104,6 @@ public abstract class BigQueryWriter {
   public void writeRows(PartitionedTableId table,
                         SortedMap<SinkRecord, InsertAllRequest.RowToInsert> rows)
       throws BigQueryConnectException, BigQueryException, InterruptedException {
-    logger.info("vignesh check {}",table.getBaseTableName());
-    logger.info("vignesh check1 {}",table.getBaseTableId());
     logger.debug("writing {} row{} to table {}", rows.size(), rows.size() != 1 ? "s" : "", table);
 
     Exception mostRecentException = null;
