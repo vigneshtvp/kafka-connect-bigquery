@@ -25,6 +25,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Maps;
+import com.wepay.kafka.connect.bigquery.BigQuerySinkConnector;
 import com.wepay.kafka.connect.bigquery.MergeQueries;
 import com.wepay.kafka.connect.bigquery.exception.ExpectedInterruptException;
 import com.wepay.kafka.connect.bigquery.utils.FieldNameSanitizer;
@@ -133,11 +134,23 @@ public class MergeBatches {
 
   public TableId destinationTableFor(TableId intermediateTable) {
     logger.info("vignesh intermediateTable from  destinationTableFor {}",intermediateToDestinationTables.values());
-    logger.info("intermediateToDestinationTables keyset from {} destinationTableFor {}",intermediateToDestinationTables.keySet(),intermediateToDestinationTables.size());
-    logger.info("intermediateToDestinationTables from  destinationTableFor {}",intermediateToDestinationTables.get(intermediateTable));
-    return intermediateToDestinationTables.get(intermediateTable);
+    logger.info("intermediateToDestinationTables keyset from {} destinationTableFor {}",intermediateToDestinationTables,intermediateToDestinationTables.size());
+    logger.info("intermediateToDestinationTables from  destinationTableFor {}",intermediateToDestinationTables.get(intermediateTable).getTable());
 
+    if(BigQuerySinkConnector.computeTableId.isEmpty()==true)
+    {
+      return intermediateToDestinationTables.get(intermediateTable);
+    }
+    else
+    {
+      TableId.of("wmt-edw-dev","US_SUPPLY_CHAIN_WTMS_NONCAT_TABLES",intermediateToDestinationTables.get(intermediateTable).getTable());
+      logger.info("vignesh entering non-else intermediateToDestinationTables from  destinationTableFor {}",intermediateToDestinationTables.get(intermediateTable));
+      return intermediateToDestinationTables.get(intermediateTable);
+    }
   }
+
+
+
 
   /**
    * Find a batch number for the record, insert that number into the converted value, record the
