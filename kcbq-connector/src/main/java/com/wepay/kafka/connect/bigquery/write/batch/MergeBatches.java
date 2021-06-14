@@ -143,8 +143,10 @@ public class MergeBatches {
     }
     else
     {
-      TableId.of("wmt-edw-dev","US_SUPPLY_CHAIN_WTMS_NONCAT_TABLES",intermediateToDestinationTables.get(intermediateTable).getTable());
-      logger.info("vignesh entering non-else intermediateToDestinationTables from  destinationTableFor {}",intermediateToDestinationTables.get(intermediateTable));
+      intermediateTable.of("wmt-edw-dev","US_SUPPLY_CHAIN_WTMS_NONCAT_TABLES",
+        intermediateToDestinationTables.get(intermediateTable).getTable());
+      logger.info("vignesh entering non-else intermediateToDestinationTables from  destinationTableFor {}",intermediateTable.toString());
+      logger.info("vignesh entering non-else2 intermediateToDestinationTables from  destinationTableFor {}",intermediateTable);
       return intermediateToDestinationTables.get(intermediateTable);
     }
   }
