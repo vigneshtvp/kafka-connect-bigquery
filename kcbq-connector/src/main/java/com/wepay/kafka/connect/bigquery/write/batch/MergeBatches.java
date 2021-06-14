@@ -134,16 +134,14 @@ public class MergeBatches {
   }
 
   public TableId destinationTableFor(TableId intermediateTable) {
-    if(BigQuerySinkConnector.computeTableId.isEmpty()==true)
+    if(BigQuerySinkConnector.EnableMultiproject==true)
     {
-      return intermediateToDestinationTables.get(intermediateTable);
+      return TableId.of(BigQuerySinkConnector.storageProjectName,
+        BigQuerySinkConnector.storageDataset,intermediateToDestinationTables.get(intermediateTable).getTable());
     }
     else
     {
-      TableId tb=TableId.of("wmt-edw-dev","US_SUPPLY_CHAIN_WTMS_NONCAT_TABLES",intermediateToDestinationTables.get(intermediateTable).getTable());
-      logger.info("vignesh intermediateTable from  destinationTableFor {} {} {}",tb.getTable(),tb.getDataset(),tb.getProject());
-      logger.info("intermediateToDestinationTables keyset from {} destinationTableFor {}",tb);
-      return tb;
+      return intermediateToDestinationTables.get(intermediateTable);
     }
   }
 

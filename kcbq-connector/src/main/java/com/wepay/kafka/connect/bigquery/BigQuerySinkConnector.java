@@ -50,7 +50,9 @@ public class BigQuerySinkConnector extends SinkConnector {
   private final SchemaManager testSchemaManager;
 
   public static final String  GCS_BQ_TASK_CONFIG_KEY = "GCSBQTask";
-  public static String computeTableId = "";
+  public static Boolean EnableMultiproject = false;
+  public static String storageDataset = null;
+  public static String storageProjectName = null;
   public static String tempTableId = "";
   public BigQuerySinkConnector() {
     testBigQuery = null;
@@ -86,9 +88,14 @@ public class BigQuerySinkConnector extends SinkConnector {
     try {
       configProperties = properties;
       config = new BigQuerySinkConfig(properties);
-      computeTableId = configProperties.get("computeDatasetTable");
       tempTableId = configProperties.get("intermediateTableSuffix");
-
+      storageDataset=configProperties.get("storageDataset");
+      storageProjectName=configProperties.get("storageProjectName");
+      EnableMultiproject= Boolean.valueOf(configProperties.get("EnableMultiproject"));
+      if(EnableMultiproject==true && (storageDataset.isEmpty()==true || storageProjectName.isEmpty()==true))
+      {
+        throw new NullPointerException("StorageDataset & storageProjectName shouldn't empty when EnableMultiproject is true");
+      }
     } catch (ConfigException err) {
       throw new SinkConfigConnectException(
           "Couldn't start BigQuerySinkConnector due to configuration error",

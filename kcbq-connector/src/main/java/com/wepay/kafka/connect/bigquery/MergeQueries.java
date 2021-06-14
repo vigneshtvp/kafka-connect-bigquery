@@ -112,9 +112,6 @@ public class MergeQueries {
   public void mergeFlush(TableId intermediateTable) {
     final TableId destinationTable = mergeBatches.destinationTableFor(intermediateTable);
     final int batchNumber = mergeBatches.incrementBatch(intermediateTable);
-    logger.info("vignesh intermediateTable {}",intermediateTable);
-    logger.info("vignesh destinationTable {}",destinationTable.getTable());
-    logger.info("vignesh intermediateTable {}",intermediateTable.getTable());
     logger.trace("Triggering merge flush from {} to {} for batch {}",
       intTable(intermediateTable), destTable(destinationTable), batchNumber);
 
@@ -137,7 +134,6 @@ public class MergeQueries {
       logger.debug("Running merge query on batch {} from {}",
         batchNumber, intTable(intermediateTable));
       String mergeFlushQuery = mergeFlushQuery(intermediateTable, destinationTable, batchNumber);
-      logger.info("vignesh mergeFlushQuery {}",mergeFlushQuery);
       logger.trace(mergeFlushQuery);
       bigQuery.query(QueryJobConfiguration.of(mergeFlushQuery));
       logger.trace("Merge from {} to {} completed",
@@ -443,18 +439,13 @@ public class MergeQueries {
   }
 
   private String table(TableId tableId) {
-    logger.info("BigQuerySinkConnector computeTableId {}",BigQuerySinkConnector.computeTableId);
-    logger.info("BigQuerySinkConnector tempTableId {}",BigQuerySinkConnector.tempTableId);
-    logger.info("BigQuerySinkConnector isempty {}",BigQuerySinkConnector.computeTableId.isEmpty());
-    logger.info("BigQuerySinkConnector null {}",tableId.getTable().indexOf(BigQuerySinkConnector.tempTableId));
-    if(tableId.getTable().indexOf(BigQuerySinkConnector.tempTableId)!=-1 || BigQuerySinkConnector.computeTableId.isEmpty()==true)
+    if(BigQuerySinkConnector.EnableMultiproject==false)
     {
       return String.format("`%s`.`%s`", tableId.getDataset(), tableId.getTable());
     }
     else
     {
-      logger.info("Table details {}",BigQuerySinkConnector.computeTableId);
-      return String.format("%s.`%s`",BigQuerySinkConnector.computeTableId,tableId.getTable());
+      return String.format("`%s`.`%s`.`%s`",BigQuerySinkConnector.storageProjectName,BigQuerySinkConnector.storageDataset,tableId.getTable());
     }
   }
 

@@ -89,19 +89,16 @@ public class UpsertDeleteBigQueryWriter extends AdaptiveBigQueryWriter {
       try {
         // ... and create or update the destination table here, if it doesn't already exist and auto
         // table creation is enabled
-        logger.info("Destination Tables {}",intermediateToDestinationTables.get(tableId));
-        logger.info("Table id {}",tableId);
-        if(BigQuerySinkConnector.computeTableId.isEmpty()==true)
+        if(BigQuerySinkConnector.EnableMultiproject==true)
         {
-          schemaManager.createOrUpdateTable(intermediateToDestinationTables.get(tableId), records);
+          TableId tb=TableId.of(BigQuerySinkConnector.storageProjectName,BigQuerySinkConnector.storageDataset
+            ,intermediateToDestinationTables.get(tableId).getTable());
+          schemaManager.createOrUpdateTable(tb,records);
         }
         else
         {
+          schemaManager.createOrUpdateTable(intermediateToDestinationTables.get(tableId), records);
 
-          TableId tb=TableId.of("wmt-edw-dev","US_SUPPLY_CHAIN_WTMS_NONCAT_TABLES",intermediateToDestinationTables.get(tableId).getTable());
-          logger.info("vignesh intermediateTable from  attemptTableCreate {} {} {}",tb.getTable(),tb.getDataset(),tb.getProject());
-          logger.info("vignesh from attemptTableCreate2 intermediateToDestinationTables keyset from {} destinationTableFor {}",tb);
-          schemaManager.createOrUpdateTable(tb,records);
         }
 
       } catch (BigQueryException exception) {

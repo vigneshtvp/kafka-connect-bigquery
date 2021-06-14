@@ -231,9 +231,7 @@ public class SchemaManager {
       logger.info("Attempting to create {} with schema {}",
           table(table), tableInfo.getDefinition().getSchema());
       try {
-        logger.info("vignesh create table {}",tableInfo);
         bigQuery.create(tableInfo);
-        logger.info("Successfully created {}", table(table));
         logger.debug("Successfully created {}", table(table));
         schemaCache.put(table, tableInfo.getDefinition().getSchema());
         return true;
