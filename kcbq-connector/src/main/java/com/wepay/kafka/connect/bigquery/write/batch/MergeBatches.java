@@ -139,10 +139,7 @@ public class MergeBatches {
       return intermediateToDestinationTables.get(intermediateTable);
     }
     else
-
-
     {
-
       TableId tb=TableId.of("wmt-edw-dev","US_SUPPLY_CHAIN_WTMS_NONCAT_TABLES",intermediateToDestinationTables.get(intermediateTable).getTable());
       logger.info("vignesh intermediateTable from  destinationTableFor {} {} {}",tb.getTable(),tb.getDataset(),tb.getProject());
       logger.info("intermediateToDestinationTables keyset from {} destinationTableFor {}",tb);

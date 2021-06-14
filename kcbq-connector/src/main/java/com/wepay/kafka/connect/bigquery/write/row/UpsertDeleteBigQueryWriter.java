@@ -22,6 +22,7 @@ package com.wepay.kafka.connect.bigquery.write.row;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.bigquery.TableId;
+import com.wepay.kafka.connect.bigquery.BigQuerySinkConnector;
 import com.wepay.kafka.connect.bigquery.SchemaManager;
 import com.wepay.kafka.connect.bigquery.exception.BigQueryConnectException;
 import com.wepay.kafka.connect.bigquery.utils.PartitionedTableId;
@@ -90,7 +91,19 @@ public class UpsertDeleteBigQueryWriter extends AdaptiveBigQueryWriter {
         // table creation is enabled
         logger.info("Destination Tables {}",intermediateToDestinationTables.get(tableId));
         logger.info("Table id {}",tableId);
-        schemaManager.createOrUpdateTable(intermediateToDestinationTables.get(tableId), records);
+        if(BigQuerySinkConnector.computeTableId.isEmpty()==true)
+        {
+          schemaManager.createOrUpdateTable(intermediateToDestinationTables.get(tableId), records);
+        }
+        else
+        {
+
+          TableId tb=TableId.of("wmt-edw-dev","US_SUPPLY_CHAIN_WTMS_NONCAT_TABLES",intermediateToDestinationTables.get(tableId).getTable());
+          logger.info("vignesh intermediateTable from  attemptTableCreate {} {} {}",tb.getTable(),tb.getDataset(),tb.getProject());
+          logger.info("vignesh from attemptTableCreate2 intermediateToDestinationTables keyset from {} destinationTableFor {}",tb);
+          schemaManager.createOrUpdateTable(tb,records);
+        }
+
       } catch (BigQueryException exception) {
         throw new BigQueryConnectException(
             "Failed to create table " + tableId, exception);
