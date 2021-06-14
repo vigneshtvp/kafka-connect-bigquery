@@ -439,7 +439,7 @@ public class MergeQueries {
   }
 
   private String table(TableId tableId) {
-    if(BigQuerySinkConnector.EnableMultiproject==false)
+    if(BigQuerySinkConnector.EnableMultiproject==false || tableId.getTable().indexOf(BigQuerySinkConnector.tempTableId)!=-1)
     {
       return String.format("`%s`.`%s`", tableId.getDataset(), tableId.getTable());
     }
