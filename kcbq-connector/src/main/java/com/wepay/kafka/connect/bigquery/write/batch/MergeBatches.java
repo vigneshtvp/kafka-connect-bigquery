@@ -19,6 +19,7 @@
 
 package com.wepay.kafka.connect.bigquery.write.batch;
 
+import com.google.api.services.bigquery.model.TableReference;
 import com.google.cloud.bigquery.InsertAllRequest;
 import com.google.cloud.bigquery.TableId;
 import com.google.common.annotations.VisibleForTesting;
@@ -133,18 +134,17 @@ public class MergeBatches {
   }
 
   public TableId destinationTableFor(TableId intermediateTable) {
-    logger.info("vignesh intermediateTable from  destinationTableFor {}",intermediateToDestinationTables.values());
-    logger.info("intermediateToDestinationTables keyset from {} destinationTableFor {}",intermediateToDestinationTables,intermediateToDestinationTables.size());
-    logger.info("intermediateToDestinationTables from  destinationTableFor {}",intermediateToDestinationTables.get(intermediateTable).getTable());
-
     if(BigQuerySinkConnector.computeTableId.isEmpty()==true)
     {
       return intermediateToDestinationTables.get(intermediateTable);
     }
     else
     {
-      intermediateTable.of("wmt-edw-dev","US_SUPPLY_CHAIN_WTMS_NONCAT_TABLES",
-        intermediateToDestinationTables.get(intermediateTable).getTable());
+      TableReference tr=new TableReference();
+      tr.setProjectId("wmt-edw-dev").setDatasetId("US_SUPPLY_CHAIN_WTMS_NONCAT_TABLES").setTableId(intermediateToDestinationTables.get(intermediateTable).getTable());
+      logger.info("vignesh intermediateTable from  destinationTableFor {}",intermediateToDestinationTables);
+      logger.info("intermediateToDestinationTables keyset from {} destinationTableFor {}",intermediateToDestinationTables,intermediateToDestinationTables.size());
+      logger.info("intermediateToDestinationTables from  destinationTableFor {}",intermediateToDestinationTables.get(intermediateTable).getTable());
       logger.info("vignesh entering non-else intermediateToDestinationTables from  destinationTableFor {}",intermediateTable.toString());
       logger.info("vignesh entering non-else2 intermediateToDestinationTables from  destinationTableFor {}",intermediateTable);
       return intermediateToDestinationTables.get(intermediateTable);
