@@ -139,15 +139,14 @@ public class MergeBatches {
       return intermediateToDestinationTables.get(intermediateTable);
     }
     else
+
+
     {
-      TableReference tr=new TableReference();
-      tr.setProjectId("wmt-edw-dev").setDatasetId("US_SUPPLY_CHAIN_WTMS_NONCAT_TABLES").setTableId(intermediateToDestinationTables.get(intermediateTable).getTable());
-      logger.info("vignesh intermediateTable from  destinationTableFor {}",intermediateToDestinationTables);
-      logger.info("intermediateToDestinationTables keyset from {} destinationTableFor {}",intermediateToDestinationTables,intermediateToDestinationTables.size());
-      logger.info("intermediateToDestinationTables from  destinationTableFor {}",intermediateToDestinationTables.get(intermediateTable).getTable());
-      logger.info("vignesh entering non-else intermediateToDestinationTables from  destinationTableFor {}",intermediateTable.toString());
-      logger.info("vignesh entering non-else2 intermediateToDestinationTables from  destinationTableFor {}",intermediateTable);
-      return intermediateToDestinationTables.get(intermediateTable);
+
+      TableId tb=TableId.of("wmt-edw-dev","US_SUPPLY_CHAIN_WTMS_NONCAT_TABLES",intermediateToDestinationTables.get(intermediateTable).getTable());
+      logger.info("vignesh intermediateTable from  destinationTableFor {} {} {}",tb.getTable(),tb.getDataset(),tb.getProject());
+      logger.info("intermediateToDestinationTables keyset from {} destinationTableFor {}",tb);
+      return tb;
     }
   }
 
