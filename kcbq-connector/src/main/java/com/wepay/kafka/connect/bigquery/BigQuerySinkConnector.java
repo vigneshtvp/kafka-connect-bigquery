@@ -50,9 +50,9 @@ public class BigQuerySinkConnector extends SinkConnector {
   private final SchemaManager testSchemaManager;
 
   public static final String  GCS_BQ_TASK_CONFIG_KEY = "GCSBQTask";
-  public static Boolean EnableMultiproject = false;
-  public static String storageDataset = null;
-  public static String storageProjectName = null;
+  public  Boolean EnableMultiproject = false;
+  public  String storageDataset = null;
+  public  String storageProjectName = null;
   public static String tempTableId = "";
   public BigQuerySinkConnector() {
     testBigQuery = null;
@@ -98,8 +98,8 @@ public class BigQuerySinkConnector extends SinkConnector {
       }
     } catch (ConfigException err) {
       throw new SinkConfigConnectException(
-          "Couldn't start BigQuerySinkConnector due to configuration error",
-          err
+              "Couldn't start BigQuerySinkConnector due to configuration error",
+              err
       );
     }
   }
