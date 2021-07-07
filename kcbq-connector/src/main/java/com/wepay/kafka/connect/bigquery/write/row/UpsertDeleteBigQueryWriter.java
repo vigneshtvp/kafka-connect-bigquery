@@ -22,12 +22,10 @@ package com.wepay.kafka.connect.bigquery.write.row;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.bigquery.TableId;
-import com.wepay.kafka.connect.bigquery.BigQuerySinkConnector;
 import com.wepay.kafka.connect.bigquery.SchemaManager;
 import com.wepay.kafka.connect.bigquery.config.BigQuerySinkTaskConfig;
 import com.wepay.kafka.connect.bigquery.exception.BigQueryConnectException;
 import com.wepay.kafka.connect.bigquery.utils.PartitionedTableId;
-import com.wepay.kafka.connect.bigquery.write.batch.MergeBatches;
 import org.apache.kafka.connect.sink.SinkRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +58,7 @@ public class UpsertDeleteBigQueryWriter extends AdaptiveBigQueryWriter {
                                     int retry,
                                     long retryWait,
                                     boolean autoCreateTables,
-                                    Map<TableId, TableId> intermediateToDestinationTables,BigQuerySinkTaskConfig config) {
+                                    Map<TableId, TableId> intermediateToDestinationTables, BigQuerySinkTaskConfig config) {
     // Hardcode autoCreateTables to true in the superclass so that intermediate tables will be
     // automatically created
     // The super class will handle all of the logic for writing to, creating, and updating
@@ -81,7 +79,7 @@ public class UpsertDeleteBigQueryWriter extends AdaptiveBigQueryWriter {
       schemaManager.updateSchema(intermediateToDestinationTables.get(tableId.getBaseTableId()), records);
     } catch (BigQueryException exception) {
       throw new BigQueryConnectException(
-              "Failed to update destination table schema for: " + tableId.getBaseTableId(), exception);
+          "Failed to update destination table schema for: " + tableId.getBaseTableId(), exception);
     }
   }
 
@@ -96,7 +94,7 @@ public class UpsertDeleteBigQueryWriter extends AdaptiveBigQueryWriter {
         if(config.getBoolean(config.Multiproject_DATASET_CONFIG)==true)
         {
           TableId tb=TableId.of(config.getString(config.PROJECT_DATASET_CONFIG),config.getString(config.STORAGE_DATASET_CONFIG),
-                  intermediateToDestinationTables.get(tableId).getTable());
+            intermediateToDestinationTables.get(tableId).getTable());
           schemaManager.createOrUpdateTable(tb,records);
         }
         else
@@ -107,7 +105,7 @@ public class UpsertDeleteBigQueryWriter extends AdaptiveBigQueryWriter {
 
       } catch (BigQueryException exception) {
         throw new BigQueryConnectException(
-                "Failed to create table " + tableId, exception);
+            "Failed to create table " + tableId, exception);
       }
     }
   }
