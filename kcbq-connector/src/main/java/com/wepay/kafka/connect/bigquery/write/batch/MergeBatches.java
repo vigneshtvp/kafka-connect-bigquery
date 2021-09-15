@@ -19,20 +19,17 @@
 
 package com.wepay.kafka.connect.bigquery.write.batch;
 
-import com.google.api.services.bigquery.model.TableReference;
 import com.google.cloud.bigquery.InsertAllRequest;
 import com.google.cloud.bigquery.TableId;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Maps;
-import com.wepay.kafka.connect.bigquery.BigQuerySinkConnector;
 import com.wepay.kafka.connect.bigquery.MergeQueries;
 import com.wepay.kafka.connect.bigquery.exception.ExpectedInterruptException;
 import com.wepay.kafka.connect.bigquery.utils.FieldNameSanitizer;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
-import org.apache.kafka.connect.errors.ConnectException;
 import org.apache.kafka.connect.sink.SinkRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +56,7 @@ public class MergeBatches {
   private final ConcurrentMap<TableId, AtomicInteger> batchNumbers;
   private final ConcurrentMap<TableId, ConcurrentMap<Integer, Batch>> batches;
   private final Map<TopicPartition, Long> offsets;
+  //private BigQuerySinkTaskConfig config;
 
   @VisibleForTesting
   public static void setStreamingBufferAvailabilityWait(long waitMs) {
@@ -133,11 +131,13 @@ public class MergeBatches {
     return result;
   }
 
-  public TableId destinationTableFor(TableId intermediateTable) {
-    if(BigQuerySinkConnector.EnableMultiproject==true)
+  public TableId destinationTableFor(TableId intermediateTable,Boolean enableMultiproject,String storageProjectName,String storageDataset ) {
+
+    if(enableMultiproject==true)
     {
-      return TableId.of(BigQuerySinkConnector.storageProjectName,
-        BigQuerySinkConnector.storageDataset,intermediateToDestinationTables.get(intermediateTable).getTable());
+      return TableId.of(storageProjectName,
+              storageDataset,
+              intermediateToDestinationTables.get(intermediateTable).getTable());
     }
     else
     {

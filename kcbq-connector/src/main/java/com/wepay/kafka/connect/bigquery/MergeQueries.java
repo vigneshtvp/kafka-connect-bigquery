@@ -19,12 +19,7 @@
 
 package com.wepay.kafka.connect.bigquery;
 
-import com.google.cloud.bigquery.BigQuery;
-import com.google.cloud.bigquery.Field;
-import com.google.cloud.bigquery.FieldList;
-import com.google.cloud.bigquery.QueryJobConfiguration;
-import com.google.cloud.bigquery.Schema;
-import com.google.cloud.bigquery.TableId;
+import com.google.cloud.bigquery.*;
 import com.google.common.annotations.VisibleForTesting;
 import com.wepay.kafka.connect.bigquery.config.BigQuerySinkConfig;
 import com.wepay.kafka.connect.bigquery.config.BigQuerySinkTaskConfig;
@@ -61,13 +56,19 @@ public class MergeQueries {
   private final BigQuery bigQuery;
   private final SchemaManager schemaManager;
   private final SinkTaskContext context;
+  private final boolean enableMultiproject;
+  private final String storageProjectName ;
+  private final String storageDataset;
+
 
   public MergeQueries(BigQuerySinkTaskConfig config,
                       MergeBatches mergeBatches,
                       KCBQThreadPoolExecutor executor,
                       BigQuery bigQuery,
                       SchemaManager schemaManager,
-                      SinkTaskContext context) {
+                      SinkTaskContext context,
+                      Boolean enableMultiproject,
+                      String storageProjectName,String storageDataset ) {
     this(
       config.getKafkaKeyFieldName().orElseThrow(() ->
         new ConnectException("Kafka key field must be configured when upsert/delete is enabled")
@@ -79,7 +80,10 @@ public class MergeQueries {
       executor,
       bigQuery,
       schemaManager,
-      context
+      context,
+      enableMultiproject,
+      storageProjectName,
+      storageDataset
     );
   }
 
@@ -92,7 +96,7 @@ public class MergeQueries {
                KCBQThreadPoolExecutor executor,
                BigQuery bigQuery,
                SchemaManager schemaManager,
-               SinkTaskContext context) {
+               SinkTaskContext context, boolean enableMultiproject, String storageProjectName,String storageDataset) {
     this.keyFieldName = keyFieldName;
     this.insertPartitionTime = insertPartitionTime;
     this.upsertEnabled = upsertEnabled;
@@ -102,6 +106,9 @@ public class MergeQueries {
     this.bigQuery = bigQuery;
     this.schemaManager = schemaManager;
     this.context = context;
+    this.enableMultiproject = enableMultiproject;
+    this.storageProjectName = storageProjectName;
+    this.storageDataset = storageDataset;
   }
 
   public void mergeFlushAll() {
@@ -110,7 +117,7 @@ public class MergeQueries {
   }
 
   public void mergeFlush(TableId intermediateTable) {
-    final TableId destinationTable = mergeBatches.destinationTableFor(intermediateTable);
+    final TableId destinationTable = mergeBatches.destinationTableFor(intermediateTable ,enableMultiproject,storageProjectName,storageDataset);
     final int batchNumber = mergeBatches.incrementBatch(intermediateTable);
     logger.trace("Triggering merge flush from {} to {} for batch {}",
       intTable(intermediateTable), destTable(destinationTable), batchNumber);
@@ -439,13 +446,13 @@ public class MergeQueries {
   }
 
   private String table(TableId tableId) {
-    if(BigQuerySinkConnector.EnableMultiproject==false || tableId.getTable().indexOf(BigQuerySinkConnector.tempTableId)!=-1)
+    if(enableMultiproject==false || tableId.getTable().indexOf(BigQuerySinkConnector.tempTableId)!=-1)
     {
       return String.format("`%s`.`%s`", tableId.getDataset(), tableId.getTable());
     }
     else
     {
-      return String.format("`%s`.`%s`.`%s`",BigQuerySinkConnector.storageProjectName,BigQuerySinkConnector.storageDataset,tableId.getTable());
+      return String.format("`%s`.`%s`.`%s`",storageProjectName,storageDataset,tableId.getTable());
     }
   }
 

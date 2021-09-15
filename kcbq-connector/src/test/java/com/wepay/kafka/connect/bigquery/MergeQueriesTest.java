@@ -19,11 +19,7 @@
 
 package com.wepay.kafka.connect.bigquery;
 
-import com.google.cloud.bigquery.BigQuery;
-import com.google.cloud.bigquery.Field;
-import com.google.cloud.bigquery.LegacySQLTypeName;
-import com.google.cloud.bigquery.Schema;
-import com.google.cloud.bigquery.TableId;
+import com.google.cloud.bigquery.*;
 import com.wepay.kafka.connect.bigquery.write.batch.KCBQThreadPoolExecutor;
 import com.wepay.kafka.connect.bigquery.write.batch.MergeBatches;
 import org.apache.kafka.connect.sink.SinkTaskContext;
@@ -49,12 +45,17 @@ public class MergeQueriesTest {
   private static final TableId DESTINATION_TABLE = TableId.of("ds1", "t");
   private static final TableId INTERMEDIATE_TABLE = TableId.of("ds1", "t_tmp_6_uuid_epoch");
   private static final Schema INTERMEDIATE_TABLE_SCHEMA = constructIntermediateTable();
+  private static final Boolean enableMultiproject = false;
+  private static final String storageProjectName = "wmt-edw-dash";
+  private static final String storageDataset = "BYTMS";
+
 
   @Mock private MergeBatches mergeBatches;
   @Mock private KCBQThreadPoolExecutor executor;
   @Mock private BigQuery bigQuery;
   @Mock private SchemaManager schemaManager;
   @Mock private SinkTaskContext context;
+
 
   @Before
   public void setUp() {
@@ -63,8 +64,8 @@ public class MergeQueriesTest {
 
   private MergeQueries mergeQueries(boolean insertPartitionTime, boolean upsert, boolean delete) {
     return new MergeQueries(
-        KEY, insertPartitionTime, upsert, delete, mergeBatches, executor, bigQuery, schemaManager, context
-    );
+        KEY, insertPartitionTime, upsert, delete, mergeBatches, executor, bigQuery, schemaManager, context,
+            enableMultiproject,storageProjectName,storageDataset);
   }
 
   private static Schema constructIntermediateTable() {
