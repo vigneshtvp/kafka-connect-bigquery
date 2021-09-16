@@ -254,6 +254,7 @@ public class SchemaManager {
   public void updateSchema(TableId table, List<SinkRecord> records) {
     synchronized (lock(tableUpdateLocks, table)) {
       TableInfo tableInfo = getTableInfo(table, records, false);
+      logger.info("vignesh table info{} table_details{} tableschema{} table_id{}",tableInfo.getTableId(),tableInfo,readTableSchema(table),table);
       if (!schemaCache.containsKey(table)) {
         schemaCache.put(table, readTableSchema(table));
       }
