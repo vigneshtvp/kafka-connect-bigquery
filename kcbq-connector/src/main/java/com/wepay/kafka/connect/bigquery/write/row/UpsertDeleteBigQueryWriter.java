@@ -78,8 +78,10 @@ public class UpsertDeleteBigQueryWriter extends AdaptiveBigQueryWriter {
       // ... and update the destination table here
       if(config.getBoolean(config.Multiproject_DATASET_CONFIG)==true)
       {
+        //logger.info("vignesh intermediateTodestination {} keyset {} tableinfo {}",intermediateToDestinationTables.containsKey(tableId.getBaseTableId()),
+             //   intermediateToDestinationTables.keySet(),tableId.getBaseTableId());
         TableId tb=TableId.of(config.getString(config.PROJECT_DATASET_CONFIG),config.getString(config.STORAGE_DATASET_CONFIG),
-                intermediateToDestinationTables.get(tableId).getTable());
+                intermediateToDestinationTables.get(tableId.getBaseTableId()).getTable());
         schemaManager.updateSchema(tb,records);
       }
       else{
