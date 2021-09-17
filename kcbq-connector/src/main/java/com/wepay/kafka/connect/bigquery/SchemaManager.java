@@ -254,8 +254,7 @@ public class SchemaManager {
   public void updateSchema(TableId table, List<SinkRecord> records) {
     synchronized (lock(tableUpdateLocks, table)) {
       TableInfo tableInfo = getTableInfo(table, records, false);
-      logger.info("vignesh table info{} table_details{} tableschema{} table_id{}",tableInfo.getTableId(),tableInfo,readTableSchema(table),table);
-      if (!schemaCache.containsKey(table)) {
+        if (!schemaCache.containsKey(table)) {
         schemaCache.put(table, readTableSchema(table));
       }
 
@@ -596,8 +595,7 @@ public class SchemaManager {
 
   private com.google.cloud.bigquery.Schema readTableSchema(TableId table) {
     logger.trace("Reading schema for {}", table(table));
-    logger.info("vignesh table_detail{} of_nullable{}",bigQuery.getTable(table),Optional.ofNullable(bigQuery.getTable(table)));
-    return Optional.ofNullable(bigQuery.getTable(table))
+       return Optional.ofNullable(bigQuery.getTable(table))
         .map(t -> t.getDefinition().getSchema())
         .orElse(null);
   }

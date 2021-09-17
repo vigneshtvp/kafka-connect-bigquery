@@ -76,7 +76,16 @@ public class UpsertDeleteBigQueryWriter extends AdaptiveBigQueryWriter {
     super.attemptSchemaUpdate(tableId, records);
     try {
       // ... and update the destination table here
-      schemaManager.updateSchema(intermediateToDestinationTables.get(tableId.getBaseTableId()), records);
+      if(config.getBoolean(config.Multiproject_DATASET_CONFIG)==true)
+      {
+        TableId tb=TableId.of(config.getString(config.PROJECT_DATASET_CONFIG),config.getString(config.STORAGE_DATASET_CONFIG),
+                intermediateToDestinationTables.get(tableId).getTable());
+        schemaManager.updateSchema(tb,records);
+      }
+      else{
+        schemaManager.updateSchema(intermediateToDestinationTables.get(tableId.getBaseTableId()), records);
+      }
+
     } catch (BigQueryException exception) {
       throw new BigQueryConnectException(
           "Failed to update destination table schema for: " + tableId.getBaseTableId(), exception);
@@ -94,8 +103,8 @@ public class UpsertDeleteBigQueryWriter extends AdaptiveBigQueryWriter {
         if(config.getBoolean(config.Multiproject_DATASET_CONFIG)==true)
         {
           TableId tb=TableId.of(config.getString(config.PROJECT_DATASET_CONFIG),config.getString(config.STORAGE_DATASET_CONFIG),
-            intermediateToDestinationTables.get(tableId).getTable());
-          schemaManager.createOrUpdateTable(tb,records);
+                  intermediateToDestinationTables.get(tableId).getTable());
+                  schemaManager.createOrUpdateTable(tb,records);
         }
         else
         {
