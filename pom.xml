@@ -100,7 +100,16 @@
         </developer>
     </developers>
 
-
+    <repositories>
+        <repository>
+            <id>confluent</id>
+            <url>https://packages.confluent.io/maven/</url>
+        </repository>
+        <repository>
+            <id>jcenter</id>
+            <url>https://jcenter.bintray.com</url>
+        </repository>
+    </repositories>
 
     <pluginRepositories>
         <pluginRepository>
