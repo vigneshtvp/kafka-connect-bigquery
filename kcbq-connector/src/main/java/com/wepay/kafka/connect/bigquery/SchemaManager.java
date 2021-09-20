@@ -202,6 +202,7 @@ public class SchemaManager {
     synchronized (lock(tableCreateLocks, table)) {
       if (bigQuery.getTable(table) == null) {
         logger.debug("{} doesn't exist; creating instead of updating", table(table));
+        logger.info("{} doesn't exist; creating instead of updating", table(table));
         if (createTable(table, records)) {
           return;
         }
@@ -253,7 +254,7 @@ public class SchemaManager {
   public void updateSchema(TableId table, List<SinkRecord> records) {
     synchronized (lock(tableUpdateLocks, table)) {
       TableInfo tableInfo = getTableInfo(table, records, false);
-      if (!schemaCache.containsKey(table)) {
+        if (!schemaCache.containsKey(table)) {
         schemaCache.put(table, readTableSchema(table));
       }
 
@@ -594,7 +595,7 @@ public class SchemaManager {
 
   private com.google.cloud.bigquery.Schema readTableSchema(TableId table) {
     logger.trace("Reading schema for {}", table(table));
-    return Optional.ofNullable(bigQuery.getTable(table))
+       return Optional.ofNullable(bigQuery.getTable(table))
         .map(t -> t.getDefinition().getSchema())
         .orElse(null);
   }

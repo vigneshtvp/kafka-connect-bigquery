@@ -21,18 +21,13 @@ package com.wepay.kafka.connect.bigquery;
 
 import com.google.cloud.bigquery.BigQuery;
 import com.wepay.kafka.connect.bigquery.config.BigQuerySinkConfig;
-
 import com.wepay.kafka.connect.bigquery.config.BigQuerySinkTaskConfig;
 import com.wepay.kafka.connect.bigquery.exception.SinkConfigConnectException;
-
 import com.wepay.kafka.connect.bigquery.utils.Version;
-
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.common.config.ConfigException;
-
 import org.apache.kafka.connect.connector.Task;
 import org.apache.kafka.connect.sink.SinkConnector;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +45,10 @@ public class BigQuerySinkConnector extends SinkConnector {
   private final SchemaManager testSchemaManager;
 
   public static final String  GCS_BQ_TASK_CONFIG_KEY = "GCSBQTask";
-
+  public  Boolean EnableMultiproject = false;
+  public  String storageDataset = null;
+  public  String storageProjectName = null;
+  public static String tempTableId = "";
   public BigQuerySinkConnector() {
     testBigQuery = null;
     testSchemaManager = null;
@@ -85,6 +83,14 @@ public class BigQuerySinkConnector extends SinkConnector {
     try {
       configProperties = properties;
       config = new BigQuerySinkConfig(properties);
+      tempTableId = configProperties.get("intermediateTableSuffix");
+      storageDataset=configProperties.get("storageDataset");
+      storageProjectName=configProperties.get("storageProjectName");
+      EnableMultiproject= Boolean.valueOf(configProperties.get("EnableMultiproject"));
+      if(EnableMultiproject==true && (storageDataset.isEmpty()==true || storageProjectName.isEmpty()==true))
+      {
+        throw new NullPointerException("StorageDataset & storageProjectName shouldn't empty when EnableMultiproject is true");
+      }
     } catch (ConfigException err) {
       throw new SinkConfigConnectException(
           "Couldn't start BigQuerySinkConnector due to configuration error",

@@ -71,6 +71,31 @@ public class BigQuerySinkConfig extends AbstractConfig {
   public static final String TOPICS_DEFAULT = "";
   private static final String TOPICS_DISPLAY =                   "Topics";
 
+
+  public static final String STORAGE_DATASET_CONFIG = "storageDataset";
+  private static final ConfigDef.Type STORAGE_DATASET_TYPE = ConfigDef.Type.STRING;
+  private static final String STORAGE_DATASET_DEFAULT = null;
+  private static final ConfigDef.Importance STORAGE_DATASET_IMPORTANCE = ConfigDef.Importance.LOW;
+  private static final String STORAGE_DATASET_DOC = "Different Storage Dataset";
+
+  public static final String PROJECT_DATASET_CONFIG = "storageProjectName";
+  private static final ConfigDef.Type PROJECT_DATASET_TYPE = ConfigDef.Type.STRING;
+  private static final String PROJECT_DATASET_DEFAULT = null;
+  private static final ConfigDef.Importance PROJECT_DATASET_IMPORTANCE = ConfigDef.Importance.LOW;
+  private static final String PROJECT_DATASET_DOC = "Different Storage Project";
+
+  public static final String Multiproject_DATASET_CONFIG = "EnableMultiproject";
+  private static final ConfigDef.Type Multiproject_DATASET_TYPE = ConfigDef.Type.BOOLEAN;
+  private static final Boolean Multiproject_DATASET_DEFAULT = false;
+  private static final ConfigDef.Importance Multiproject_DATASET_IMPORTANCE = ConfigDef.Importance.LOW;
+  private static final String Multiproject_DATASET_DOC = "Enable Multi project";
+
+  public static final String COMPUTE_DATASET_CONFIG = "computeDatasetTable";
+  private static final ConfigDef.Type COMPUTE_DATASET_TYPE = ConfigDef.Type.STRING;
+  private static final String COMPUTE_DATASET_DEFAULT = "";
+  private static final ConfigDef.Importance COMPUTE_DATASET_IMPORTANCE = ConfigDef.Importance.LOW;
+  private static final String COMPUTE_DATASET_DOC = "Different Computation project";
+
   public static final String TOPICS_REGEX_CONFIG =                     "topics.regex";
   private static final ConfigDef.Type TOPICS_REGEX_TYPE =              ConfigDef.Type.STRING;
   private static final ConfigDef.Importance TOPICS_REGEX_IMPORTANCE =  ConfigDef.Importance.HIGH;
@@ -187,9 +212,9 @@ public class BigQuerySinkConfig extends AbstractConfig {
   private static final String KAFKA_DATA_FIELD_NAME_DOC = "The name of the field of Kafka Data. " +
           "Default to be null, which means Kafka Data Field will not be included. ";
 
-  public static final String AVRO_DATA_CACHE_SIZE_CONFIG =                 "avroDataCacheSize";
-  private static final ConfigDef.Type AVRO_DATA_CACHE_SIZE_TYPE =          ConfigDef.Type.INT;
-  public static final Integer AVRO_DATA_CACHE_SIZE_DEFAULT =               100;
+  public static final String AVRO_DATA_CACHE_SIZE_CONFIG = "avroDataCacheSize";
+  private static final ConfigDef.Type AVRO_DATA_CACHE_SIZE_TYPE = ConfigDef.Type.INT;
+  public static final Integer AVRO_DATA_CACHE_SIZE_DEFAULT =  100;
   private static final ConfigDef.Validator AVRO_DATA_CACHE_SIZE_VALIDATOR =
       ConfigDef.Range.atLeast(0);
   private static final ConfigDef.Importance AVRO_DATA_CACHE_SIZE_IMPORTANCE =
@@ -338,6 +363,21 @@ public class BigQuerySinkConfig extends AbstractConfig {
             TOPICS_REGEX_ORDER_IN_GROUP,
             TOPICS_REGEX_WIDTH,
             TOPICS_REGEX_DISPLAY)
+      .define(STORAGE_DATASET_CONFIG,
+        STORAGE_DATASET_TYPE,
+        STORAGE_DATASET_DEFAULT,
+        STORAGE_DATASET_IMPORTANCE,
+        STORAGE_DATASET_DOC)
+    .define(PROJECT_DATASET_CONFIG,
+      PROJECT_DATASET_TYPE,
+      PROJECT_DATASET_DEFAULT,
+      PROJECT_DATASET_IMPORTANCE,
+      PROJECT_DATASET_DOC)
+    .define(Multiproject_DATASET_CONFIG,
+      Multiproject_DATASET_TYPE,
+      Multiproject_DATASET_DEFAULT,
+      Multiproject_DATASET_IMPORTANCE,
+      Multiproject_DATASET_DOC)
         .define(
             ENABLE_BATCH_CONFIG,
             ENABLE_BATCH_TYPE,
@@ -498,6 +538,12 @@ public class BigQuerySinkConfig extends AbstractConfig {
             MERGE_RECORDS_THRESHOLD_VALIDATOR,
             MERGE_RECORDS_THRESHOLD_IMPORTANCE,
             MERGE_RECORDS_THRESHOLD_DOC
+        ).define(
+            COMPUTE_DATASET_CONFIG,
+            COMPUTE_DATASET_TYPE,
+            COMPUTE_DATASET_DEFAULT,
+            COMPUTE_DATASET_IMPORTANCE,
+            COMPUTE_DATASET_DOC
         ).define(
             TIME_PARTITIONING_TYPE_CONFIG,
             TIME_PARTITIONING_TYPE_TYPE,

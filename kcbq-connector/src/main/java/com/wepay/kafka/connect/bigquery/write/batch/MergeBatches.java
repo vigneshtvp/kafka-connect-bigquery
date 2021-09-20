@@ -30,7 +30,6 @@ import com.wepay.kafka.connect.bigquery.exception.ExpectedInterruptException;
 import com.wepay.kafka.connect.bigquery.utils.FieldNameSanitizer;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
-import org.apache.kafka.connect.errors.ConnectException;
 import org.apache.kafka.connect.sink.SinkRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,6 +56,7 @@ public class MergeBatches {
   private final ConcurrentMap<TableId, AtomicInteger> batchNumbers;
   private final ConcurrentMap<TableId, ConcurrentMap<Integer, Batch>> batches;
   private final Map<TopicPartition, Long> offsets;
+  //private BigQuerySinkTaskConfig config;
 
   @VisibleForTesting
   public static void setStreamingBufferAvailabilityWait(long waitMs) {
@@ -131,9 +131,22 @@ public class MergeBatches {
     return result;
   }
 
-  public TableId destinationTableFor(TableId intermediateTable) {
-    return intermediateToDestinationTables.get(intermediateTable);
+  public TableId destinationTableFor(TableId intermediateTable,Boolean enableMultiproject,String storageProjectName,String storageDataset ) {
+
+    if(enableMultiproject==true)
+    {
+      return TableId.of(storageProjectName,
+              storageDataset,
+              intermediateToDestinationTables.get(intermediateTable).getTable());
+    }
+    else
+    {
+      return intermediateToDestinationTables.get(intermediateTable);
+    }
   }
+
+
+
 
   /**
    * Find a batch number for the record, insert that number into the converted value, record the
