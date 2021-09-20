@@ -19,7 +19,15 @@
 
 package com.wepay.kafka.connect.bigquery;
 
+<<<<<<< HEAD
 import com.google.cloud.bigquery.*;
+=======
+import com.google.cloud.bigquery.BigQuery;
+import com.google.cloud.bigquery.Field;
+import com.google.cloud.bigquery.LegacySQLTypeName;
+import com.google.cloud.bigquery.Schema;
+import com.google.cloud.bigquery.TableId;
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
 import com.wepay.kafka.connect.bigquery.write.batch.KCBQThreadPoolExecutor;
 import com.wepay.kafka.connect.bigquery.write.batch.MergeBatches;
 import org.apache.kafka.connect.sink.SinkTaskContext;
@@ -45,10 +53,13 @@ public class MergeQueriesTest {
   private static final TableId DESTINATION_TABLE = TableId.of("ds1", "t");
   private static final TableId INTERMEDIATE_TABLE = TableId.of("ds1", "t_tmp_6_uuid_epoch");
   private static final Schema INTERMEDIATE_TABLE_SCHEMA = constructIntermediateTable();
+<<<<<<< HEAD
   private static final Boolean enableMultiproject = false;
   private static final String storageProjectName = "wmt-edw-dash";
   private static final String storageDataset = "BYTMS";
 
+=======
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
 
   @Mock private MergeBatches mergeBatches;
   @Mock private KCBQThreadPoolExecutor executor;
@@ -56,7 +67,10 @@ public class MergeQueriesTest {
   @Mock private SchemaManager schemaManager;
   @Mock private SinkTaskContext context;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
   @Before
   public void setUp() {
     when(schemaManager.cachedSchema(INTERMEDIATE_TABLE)).thenReturn(INTERMEDIATE_TABLE_SCHEMA);
@@ -64,8 +78,13 @@ public class MergeQueriesTest {
 
   private MergeQueries mergeQueries(boolean insertPartitionTime, boolean upsert, boolean delete) {
     return new MergeQueries(
+<<<<<<< HEAD
         KEY, insertPartitionTime, upsert, delete, mergeBatches, executor, bigQuery, schemaManager, context,
             enableMultiproject,storageProjectName,storageDataset);
+=======
+        KEY, insertPartitionTime, upsert, delete, mergeBatches, executor, bigQuery, schemaManager, context
+    );
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
   }
 
   private static Schema constructIntermediateTable() {

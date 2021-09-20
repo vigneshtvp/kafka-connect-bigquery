@@ -23,12 +23,18 @@ import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryException;
 import com.google.cloud.bigquery.TableId;
 import com.wepay.kafka.connect.bigquery.SchemaManager;
+<<<<<<< HEAD
 import com.wepay.kafka.connect.bigquery.config.BigQuerySinkTaskConfig;
 import com.wepay.kafka.connect.bigquery.exception.BigQueryConnectException;
 import com.wepay.kafka.connect.bigquery.utils.PartitionedTableId;
 import org.apache.kafka.connect.sink.SinkRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+=======
+import com.wepay.kafka.connect.bigquery.exception.BigQueryConnectException;
+import com.wepay.kafka.connect.bigquery.utils.PartitionedTableId;
+import org.apache.kafka.connect.sink.SinkRecord;
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
 
 import java.util.List;
 import java.util.Map;
@@ -36,11 +42,16 @@ import java.util.Map;
 public class UpsertDeleteBigQueryWriter extends AdaptiveBigQueryWriter {
 
   private final SchemaManager schemaManager;
+<<<<<<< HEAD
   private static final Logger logger = LoggerFactory.getLogger(UpsertDeleteBigQueryWriter.class);
   private final boolean autoCreateTables;
   private final Map<TableId, TableId> intermediateToDestinationTables;
   private BigQuerySinkTaskConfig config;
 
+=======
+  private final boolean autoCreateTables;
+  private final Map<TableId, TableId> intermediateToDestinationTables;
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
 
   /**
    * @param bigQuery Used to send write requests to BigQuery.
@@ -58,7 +69,11 @@ public class UpsertDeleteBigQueryWriter extends AdaptiveBigQueryWriter {
                                     int retry,
                                     long retryWait,
                                     boolean autoCreateTables,
+<<<<<<< HEAD
                                     Map<TableId, TableId> intermediateToDestinationTables, BigQuerySinkTaskConfig config) {
+=======
+                                    Map<TableId, TableId> intermediateToDestinationTables) {
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
     // Hardcode autoCreateTables to true in the superclass so that intermediate tables will be
     // automatically created
     // The super class will handle all of the logic for writing to, creating, and updating
@@ -67,7 +82,10 @@ public class UpsertDeleteBigQueryWriter extends AdaptiveBigQueryWriter {
     this.schemaManager = schemaManager;
     this.autoCreateTables = autoCreateTables;
     this.intermediateToDestinationTables = intermediateToDestinationTables;
+<<<<<<< HEAD
     this.config=config;
+=======
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
   }
 
   @Override
@@ -76,6 +94,7 @@ public class UpsertDeleteBigQueryWriter extends AdaptiveBigQueryWriter {
     super.attemptSchemaUpdate(tableId, records);
     try {
       // ... and update the destination table here
+<<<<<<< HEAD
       if(config.getBoolean(config.Multiproject_DATASET_CONFIG)==true)
       {
         //logger.info("vignesh intermediateTodestination {} keyset {} tableinfo {}",intermediateToDestinationTables.containsKey(tableId.getBaseTableId()),
@@ -88,6 +107,9 @@ public class UpsertDeleteBigQueryWriter extends AdaptiveBigQueryWriter {
         schemaManager.updateSchema(intermediateToDestinationTables.get(tableId.getBaseTableId()), records);
       }
 
+=======
+      schemaManager.updateSchema(intermediateToDestinationTables.get(tableId.getBaseTableId()), records);
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
     } catch (BigQueryException exception) {
       throw new BigQueryConnectException(
           "Failed to update destination table schema for: " + tableId.getBaseTableId(), exception);
@@ -102,6 +124,7 @@ public class UpsertDeleteBigQueryWriter extends AdaptiveBigQueryWriter {
       try {
         // ... and create or update the destination table here, if it doesn't already exist and auto
         // table creation is enabled
+<<<<<<< HEAD
         if(config.getBoolean(config.Multiproject_DATASET_CONFIG)==true)
         {
           TableId tb=TableId.of(config.getString(config.PROJECT_DATASET_CONFIG),config.getString(config.STORAGE_DATASET_CONFIG),
@@ -114,6 +137,9 @@ public class UpsertDeleteBigQueryWriter extends AdaptiveBigQueryWriter {
 
         }
 
+=======
+        schemaManager.createOrUpdateTable(intermediateToDestinationTables.get(tableId), records);
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
       } catch (BigQueryException exception) {
         throw new BigQueryConnectException(
             "Failed to create table " + tableId, exception);

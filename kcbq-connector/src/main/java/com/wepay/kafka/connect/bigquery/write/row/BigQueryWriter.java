@@ -134,14 +134,21 @@ public abstract class BigQueryWriter {
         mostRecentException = err;
         if (err.getCode() == INTERNAL_SERVICE_ERROR
             || err.getCode() == SERVICE_UNAVAILABLE
+<<<<<<< HEAD
             || err.getCode() == BAD_GATEWAY
         || err.getLocalizedMessage()== "Connection reset") {
+=======
+            || err.getCode() == BAD_GATEWAY) {
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
           // backend error: https://cloud.google.com/bigquery/troubleshooting-errors
           /* for BAD_GATEWAY: https://cloud.google.com/storage/docs/json_api/v1/status-codes
              todo possibly this page is inaccurate for bigquery, but the message we are getting
              suggest it's an internal backend error and we should retry, so lets take that at face
              value. */
+<<<<<<< HEAD
           logger.info("BQ Eroor:{}",err.getLocalizedMessage());
+=======
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
           logger.warn("BQ backend error: {}, attempting retry", err.getCode());
           retryCount++;
         } else if (err.getCode() == FORBIDDEN

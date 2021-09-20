@@ -19,6 +19,10 @@
 
 package com.wepay.kafka.connect.bigquery;
 
+<<<<<<< HEAD
+=======
+import static org.junit.Assert.assertEquals;
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -31,25 +35,47 @@ import com.google.cloud.bigquery.Table;
 import com.google.cloud.bigquery.TableDefinition;
 import com.google.cloud.bigquery.TableId;
 import com.google.cloud.bigquery.TableInfo;
+<<<<<<< HEAD
 
 import com.google.cloud.bigquery.TimePartitioning;
+=======
+import com.google.cloud.bigquery.TimePartitioning;
+import com.google.common.collect.ImmutableList;
+
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
 import com.wepay.kafka.connect.bigquery.api.SchemaRetriever;
 import com.wepay.kafka.connect.bigquery.convert.SchemaConverter;
 
 import com.wepay.kafka.connect.bigquery.exception.BigQueryConnectException;
 import com.wepay.kafka.connect.bigquery.retrieve.IdentitySchemaRetriever;
+<<<<<<< HEAD
 import org.apache.kafka.connect.data.Schema;
 
+=======
+import java.util.Random;
+import org.apache.kafka.connect.data.Schema;
+
+import org.apache.kafka.connect.data.SchemaBuilder;
+import org.apache.kafka.connect.data.Struct;
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
 import org.apache.kafka.connect.sink.SinkRecord;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.stubbing.OngoingStubbing;
 
+<<<<<<< HEAD
+=======
+import java.util.ArrayList;
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+<<<<<<< HEAD
+=======
+import java.util.stream.Collectors;
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
 
 public class SchemaManagerTest {
 
@@ -81,7 +107,11 @@ public class SchemaManagerTest {
     Optional<String> kafkaDataFieldName = Optional.of("kafkaData");
     SchemaManager schemaManager = new SchemaManager(mockSchemaRetriever, mockSchemaConverter,
         mockBigQuery, false, false, false, kafkaKeyFieldName, kafkaDataFieldName,
+<<<<<<< HEAD
         Optional.empty(), Optional.empty(), Optional.empty(), TimePartitioning.Type.DAY);
+=======
+        Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(TimePartitioning.Type.DAY));
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
 
     when(mockSchemaConverter.convertSchema(mockKafkaSchema)).thenReturn(fakeBigQuerySchema);
     when(mockKafkaSchema.doc()).thenReturn(testDoc);
@@ -89,7 +119,11 @@ public class SchemaManagerTest {
     TableInfo tableInfo = schemaManager
         .constructTableInfo(tableId, fakeBigQuerySchema, testDoc, true);
 
+<<<<<<< HEAD
     Assert.assertEquals("Kafka doc does not match BigQuery table description",
+=======
+    assertEquals("Kafka doc does not match BigQuery table description",
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
         testDoc, tableInfo.getDescription());
     Assert.assertNull("Timestamp partition field name is not null",
         ((StandardTableDefinition) tableInfo.getDefinition()).getTimePartitioning().getField());
@@ -102,7 +136,11 @@ public class SchemaManagerTest {
     Optional<String> testField = Optional.of("testField");
     SchemaManager schemaManager = new SchemaManager(mockSchemaRetriever, mockSchemaConverter,
         mockBigQuery, false, false, false, Optional.empty(), Optional.empty(), testField,
+<<<<<<< HEAD
         Optional.empty(), Optional.empty(), TimePartitioning.Type.DAY);
+=======
+        Optional.empty(), Optional.empty(), Optional.of(TimePartitioning.Type.DAY));
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
 
     when(mockSchemaConverter.convertSchema(mockKafkaSchema)).thenReturn(fakeBigQuerySchema);
     when(mockKafkaSchema.doc()).thenReturn(testDoc);
@@ -110,7 +148,11 @@ public class SchemaManagerTest {
     TableInfo tableInfo = schemaManager
         .constructTableInfo(tableId, fakeBigQuerySchema, testDoc, true);
 
+<<<<<<< HEAD
     Assert.assertEquals("Kafka doc does not match BigQuery table description",
+=======
+    assertEquals("Kafka doc does not match BigQuery table description",
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
         testDoc, tableInfo.getDescription());
     StandardTableDefinition definition = tableInfo.getDefinition();
     Assert.assertNotNull(definition.getTimePartitioning());
@@ -126,7 +168,11 @@ public class SchemaManagerTest {
   public void testAlternativeTimestampPartitionType() {
     SchemaManager schemaManager = new SchemaManager(mockSchemaRetriever, mockSchemaConverter,
         mockBigQuery, false, false, false, Optional.empty(), Optional.empty(), Optional.empty(),
+<<<<<<< HEAD
         Optional.empty(), Optional.empty(), TimePartitioning.Type.HOUR);
+=======
+        Optional.empty(), Optional.empty(), Optional.of(TimePartitioning.Type.HOUR));
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
 
     when(mockSchemaConverter.convertSchema(mockKafkaSchema)).thenReturn(fakeBigQuerySchema);
     when(mockKafkaSchema.doc()).thenReturn(testDoc);
@@ -142,11 +188,36 @@ public class SchemaManagerTest {
   }
 
   @Test
+<<<<<<< HEAD
+=======
+  public void testNoTimestampPartitionType() {
+    SchemaManager schemaManager = new SchemaManager(mockSchemaRetriever, mockSchemaConverter,
+        mockBigQuery, false, false, false, Optional.empty(), Optional.empty(), Optional.empty(),
+        Optional.empty(), Optional.empty(), Optional.empty());
+
+    when(mockSchemaConverter.convertSchema(mockKafkaSchema)).thenReturn(fakeBigQuerySchema);
+    when(mockKafkaSchema.doc()).thenReturn(testDoc);
+
+    TableInfo tableInfo = schemaManager
+        .constructTableInfo(tableId, fakeBigQuerySchema, testDoc, true);
+
+    Assert.assertEquals("Kafka doc does not match BigQuery table description",
+        testDoc, tableInfo.getDescription());
+    StandardTableDefinition definition = tableInfo.getDefinition();
+    Assert.assertNull(definition.getTimePartitioning());
+  }
+
+  @Test
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
   public void testUpdateTimestampPartitionNull() {
     Optional<String> testField = Optional.of("testField");
     SchemaManager schemaManager = new SchemaManager(mockSchemaRetriever, mockSchemaConverter,
         mockBigQuery, false, false, false, Optional.empty(), Optional.empty(), testField,
+<<<<<<< HEAD
         Optional.empty(), Optional.empty(), TimePartitioning.Type.DAY);
+=======
+        Optional.empty(), Optional.empty(), Optional.of(TimePartitioning.Type.DAY));
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
 
     when(mockSchemaConverter.convertSchema(mockKafkaSchema)).thenReturn(fakeBigQuerySchema);
     when(mockKafkaSchema.doc()).thenReturn(testDoc);
@@ -165,7 +236,11 @@ public class SchemaManagerTest {
     Optional<String> testField = Optional.of("testField");
     SchemaManager schemaManager = new SchemaManager(mockSchemaRetriever, mockSchemaConverter,
         mockBigQuery, false, false, false, Optional.empty(), Optional.empty(), testField,
+<<<<<<< HEAD
         Optional.empty(), Optional.empty(),TimePartitioning.Type.DAY);
+=======
+        Optional.empty(), Optional.empty(), Optional.of(TimePartitioning.Type.DAY));
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
 
     when(mockSchemaConverter.convertSchema(mockKafkaSchema)).thenReturn(fakeBigQuerySchema);
     when(mockKafkaSchema.doc()).thenReturn(testDoc);
@@ -184,7 +259,11 @@ public class SchemaManagerTest {
     Optional<String> updateField = Optional.of("testUpdateField");
     schemaManager = new SchemaManager(mockSchemaRetriever, mockSchemaConverter,
         mockBigQuery, false, false, false, Optional.empty(), Optional.empty(), updateField, Optional.empty(), Optional.empty(),
+<<<<<<< HEAD
         TimePartitioning.Type.DAY);
+=======
+        Optional.of(TimePartitioning.Type.DAY));
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
 
     tableInfo = schemaManager
         .constructTableInfo(tableId, fakeBigQuerySchema, testDoc, false);
@@ -198,7 +277,11 @@ public class SchemaManagerTest {
     Optional<Long> testExpirationMs = Optional.of(86400000L);
     SchemaManager schemaManager = new SchemaManager(mockSchemaRetriever, mockSchemaConverter,
         mockBigQuery, false, false, false, Optional.empty(), Optional.empty(), Optional.empty(),
+<<<<<<< HEAD
         testExpirationMs, Optional.empty(), TimePartitioning.Type.DAY);
+=======
+        testExpirationMs, Optional.empty(), Optional.of(TimePartitioning.Type.DAY));
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
 
     when(mockSchemaConverter.convertSchema(mockKafkaSchema)).thenReturn(fakeBigQuerySchema);
     when(mockKafkaSchema.doc()).thenReturn(testDoc);
@@ -222,7 +305,11 @@ public class SchemaManagerTest {
     Optional<String> testField = Optional.of("testField");
     SchemaManager schemaManager = new SchemaManager(mockSchemaRetriever, mockSchemaConverter,
         mockBigQuery, false, false, false, Optional.empty(), Optional.empty(), testField,
+<<<<<<< HEAD
         testExpirationMs, Optional.empty(), TimePartitioning.Type.DAY);
+=======
+        testExpirationMs, Optional.empty(), Optional.of(TimePartitioning.Type.DAY));
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
 
     when(mockSchemaConverter.convertSchema(mockKafkaSchema)).thenReturn(fakeBigQuerySchema);
     when(mockKafkaSchema.doc()).thenReturn(testDoc);
@@ -247,7 +334,11 @@ public class SchemaManagerTest {
     Optional<List<String>> testField = Optional.of(Arrays.asList("column1", "column2"));
     SchemaManager schemaManager = new SchemaManager(mockSchemaRetriever, mockSchemaConverter,
         mockBigQuery, false, false, false, Optional.empty(), Optional.empty(), timestampPartitionFieldName,
+<<<<<<< HEAD
         Optional.empty(), testField, TimePartitioning.Type.DAY);
+=======
+        Optional.empty(), testField, Optional.of(TimePartitioning.Type.DAY));
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
 
     when(mockSchemaConverter.convertSchema(mockKafkaSchema)).thenReturn(fakeBigQuerySchema);
     when(mockKafkaSchema.doc()).thenReturn(testDoc);
@@ -255,11 +346,19 @@ public class SchemaManagerTest {
     TableInfo tableInfo = schemaManager
         .constructTableInfo(tableId, fakeBigQuerySchema, testDoc, true);
 
+<<<<<<< HEAD
     Assert.assertEquals("Kafka doc does not match BigQuery table description",
         testDoc, tableInfo.getDescription());
     StandardTableDefinition definition = tableInfo.getDefinition();
     Assert.assertNotNull(definition.getClustering());
     Assert.assertEquals("The field name does not match the field name of time partition",
+=======
+    assertEquals("Kafka doc does not match BigQuery table description",
+        testDoc, tableInfo.getDescription());
+    StandardTableDefinition definition = tableInfo.getDefinition();
+    Assert.assertNotNull(definition.getClustering());
+    assertEquals("The field name does not match the field name of time partition",
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
         testField.get(),
         definition.getClustering().getFields());
   }
@@ -270,7 +369,11 @@ public class SchemaManagerTest {
     Optional<List<String>> testField = Optional.of(Arrays.asList("column1", "column2"));
     SchemaManager schemaManager = new SchemaManager(mockSchemaRetriever, mockSchemaConverter,
         mockBigQuery, false, false, false, Optional.empty(), Optional.empty(), timestampPartitionFieldName,
+<<<<<<< HEAD
         Optional.empty(), testField, TimePartitioning.Type.DAY);
+=======
+        Optional.empty(), testField, Optional.of(TimePartitioning.Type.DAY));
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
 
     when(mockSchemaConverter.convertSchema(mockKafkaSchema)).thenReturn(fakeBigQuerySchema);
     when(mockKafkaSchema.doc()).thenReturn(testDoc);
@@ -290,7 +393,11 @@ public class SchemaManagerTest {
     Optional<List<String>> testField = Optional.of(Arrays.asList("column1", "column2"));
     SchemaManager schemaManager = new SchemaManager(mockSchemaRetriever, mockSchemaConverter,
         mockBigQuery, false, false, false, Optional.empty(), Optional.empty(), timestampPartitionFieldName,
+<<<<<<< HEAD
         Optional.empty(), testField, TimePartitioning.Type.DAY);
+=======
+        Optional.empty(), testField, Optional.of(TimePartitioning.Type.DAY));
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
 
     when(mockSchemaConverter.convertSchema(mockKafkaSchema)).thenReturn(fakeBigQuerySchema);
     when(mockKafkaSchema.doc()).thenReturn(testDoc);
@@ -309,7 +416,11 @@ public class SchemaManagerTest {
     Optional<List<String>> updateTestField = Optional.of(Arrays.asList("column3", "column4"));
     schemaManager = new SchemaManager(mockSchemaRetriever, mockSchemaConverter,
         mockBigQuery, false, false, false, Optional.empty(), Optional.empty(), timestampPartitionFieldName,
+<<<<<<< HEAD
         Optional.empty(), updateTestField, TimePartitioning.Type.DAY);
+=======
+        Optional.empty(), updateTestField, Optional.of(TimePartitioning.Type.DAY));
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
 
     tableInfo = schemaManager
         .constructTableInfo(tableId, fakeBigQuerySchema, testDoc, false);
@@ -567,12 +678,77 @@ public class SchemaManagerTest {
     testGetAndValidateProposedSchema(schemaManager, existingSchema, expandedSchema, expectedSchema);
   }
 
+<<<<<<< HEAD
+=======
+  @Test
+  public void testUpdateWithOnlyTombstoneRecordsAndExistingSchema() {
+    com.google.cloud.bigquery.Schema existingSchema = com.google.cloud.bigquery.Schema.of(
+        Field.newBuilder("f1", LegacySQLTypeName.BOOLEAN).setMode(Field.Mode.REQUIRED).build()
+    );
+
+    SchemaManager schemaManager = createSchemaManager(true, false, false);
+    List<SinkRecord> incomingSinkRecords = Collections.nCopies(2, recordWithValueSchema(null));
+    // Tombstone records are skipped, and existing schema is reused.
+    testGetAndValidateProposedSchema(schemaManager, existingSchema,
+        Collections.singletonList(existingSchema), existingSchema, incomingSinkRecords);
+  }
+
+  @Test(expected = BigQueryConnectException.class)
+  public void testUpdateWithOnlyTombstoneRecordsNoExistingSchema() {
+    SchemaManager schemaManager = createSchemaManager(true, false, false);
+    List<SinkRecord> incomingSinkRecords = Collections.nCopies(2, recordWithValueSchema(null));
+    testGetAndValidateProposedSchema(
+        schemaManager, null, Collections.singletonList(null), null, incomingSinkRecords);
+  }
+
+  @Test
+  public void testUpdateWithRegularAndTombstoneRecords() {
+    com.google.cloud.bigquery.Schema existingSchema = com.google.cloud.bigquery.Schema.of(
+        Field.newBuilder("f1", LegacySQLTypeName.BOOLEAN).setMode(Field.Mode.REQUIRED).build()
+    );
+
+    com.google.cloud.bigquery.Schema expandedSchema = com.google.cloud.bigquery.Schema.of(
+        Field.newBuilder("f1", LegacySQLTypeName.BOOLEAN).setMode(Field.Mode.REQUIRED).build(),
+        Field.newBuilder("f2", LegacySQLTypeName.INTEGER).setMode(Field.Mode.NULLABLE).build()
+    );
+
+    SchemaManager schemaManager = createSchemaManager(true, false, false);
+    // Put tombstone at the end of the batch.
+    List<SinkRecord> incomingSinkRecords = ImmutableList.of(
+        recordWithValueSchema(mockKafkaSchema), recordWithValueSchema(null));
+    // Tombstone record is skipped when converting schema.
+    testGetAndValidateProposedSchema(schemaManager, existingSchema,
+        Collections.singletonList(expandedSchema), expandedSchema, incomingSinkRecords);
+  }
+
+  @Test
+  public void testGetUnionizedTableDescriptionFromTombstoneRecord() {
+    SchemaManager schemaManager = createSchemaManager(false, true, true);
+    SinkRecord tombstone = recordWithValueSchema(null);
+    List<SinkRecord> incomingSinkRecords = ImmutableList.of(tombstone);
+    Assert.assertNull(schemaManager.getUnionizedTableDescription(incomingSinkRecords));
+  }
+
+  @Test
+  public void testGetUnionizedTableDescriptionFromRegularAndNullRecords() {
+    SchemaManager schemaManager = createSchemaManager(false, true, true).forIntermediateTables();
+    List<SinkRecord> incomingSinkRecords = ImmutableList.of(
+        recordWithValueSchema(mockKafkaSchema), recordWithValueSchema(null));
+    when(mockKafkaSchema.doc()).thenReturn(testDoc);
+    Assert.assertNotNull(schemaManager.getUnionizedTableDescription(incomingSinkRecords));
+  }
+
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
   private SchemaManager createSchemaManager(
       boolean allowNewFields, boolean allowFieldRelaxation, boolean allowUnionization) {
     return new SchemaManager(new IdentitySchemaRetriever(), mockSchemaConverter, mockBigQuery,
         allowNewFields, allowFieldRelaxation, allowUnionization,
         Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+<<<<<<< HEAD
         TimePartitioning.Type.DAY);
+=======
+        Optional.of(TimePartitioning.Type.DAY));
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
   }
 
   private void testGetAndValidateProposedSchema(
@@ -589,11 +765,25 @@ public class SchemaManagerTest {
       com.google.cloud.bigquery.Schema existingSchema,
       List<com.google.cloud.bigquery.Schema> newSchemas,
       com.google.cloud.bigquery.Schema expectedSchema) {
+<<<<<<< HEAD
     Table existingTable = existingSchema != null ? tableWithSchema(existingSchema) : null;
 
     SinkRecord mockSinkRecord = recordWithValueSchema(mockKafkaSchema);
     List<SinkRecord> incomingSinkRecords = Collections.nCopies(newSchemas.size(), mockSinkRecord);
 
+=======
+    testGetAndValidateProposedSchema(schemaManager, existingSchema, newSchemas, expectedSchema,
+        Collections.nCopies(newSchemas.size(), recordWithValueSchema(mockKafkaSchema)));
+  }
+
+  private void testGetAndValidateProposedSchema(
+      SchemaManager schemaManager,
+      com.google.cloud.bigquery.Schema existingSchema,
+      List<com.google.cloud.bigquery.Schema> newSchemas,
+      com.google.cloud.bigquery.Schema expectedSchema,
+      List<SinkRecord> incomingSinkRecords) {
+    Table existingTable = existingSchema != null ? tableWithSchema(existingSchema) : null;
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
     when(mockBigQuery.getTable(tableId)).thenReturn(existingTable);
     OngoingStubbing<com.google.cloud.bigquery.Schema> converterStub =
         when(mockSchemaConverter.convertSchema(mockKafkaSchema));
@@ -607,7 +797,11 @@ public class SchemaManagerTest {
         schemaManager.getAndValidateProposedSchema(tableId, incomingSinkRecords);
 
     if (expectedSchema != null) {
+<<<<<<< HEAD
       Assert.assertEquals(expectedSchema, proposedSchema);
+=======
+      assertEquals(expectedSchema, proposedSchema);
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
     }
   }
 
@@ -626,4 +820,124 @@ public class SchemaManagerTest {
     when(result.valueSchema()).thenReturn(valueSchema);
     return result;
   }
+<<<<<<< HEAD
+=======
+
+  @Test
+  public void testUnionizeSchemaNoNestedOrRepeatedRecords() {
+    com.google.cloud.bigquery.Schema s1 = com.google.cloud.bigquery.Schema.of(
+        Field.of(LegacySQLTypeName.BYTES.name(), LegacySQLTypeName.BYTES),
+        Field.of(LegacySQLTypeName.STRING.name(), LegacySQLTypeName.STRING),
+        Field.of(LegacySQLTypeName.DATE.name(), LegacySQLTypeName.DATE)
+    );
+    com.google.cloud.bigquery.Schema s2 = com.google.cloud.bigquery.Schema.of(
+        Field.of(LegacySQLTypeName.TIMESTAMP.name(), LegacySQLTypeName.TIMESTAMP),
+        Field.of(LegacySQLTypeName.FLOAT.name(), LegacySQLTypeName.FLOAT)
+    );
+
+    List<Field> expectedFields = new ArrayList<>();
+    expectedFields.addAll(s1.getFields());
+    expectedFields.addAll(s2.getFields());
+
+    assertUnion(makeNullable(com.google.cloud.bigquery.Schema.of(expectedFields)), s1, s2);
+  }
+
+  @Test
+  public void testUnionizeSchemaWithNestedRecords() {
+    com.google.cloud.bigquery.Schema s1 = com.google.cloud.bigquery.Schema.of(
+        Field.of(LegacySQLTypeName.RECORD.name(), LegacySQLTypeName.RECORD,
+            Field.of(LegacySQLTypeName.STRING.name(), LegacySQLTypeName.STRING),
+            Field.of(LegacySQLTypeName.DATE.name(), LegacySQLTypeName.DATE)
+    ));
+    com.google.cloud.bigquery.Schema s2 = com.google.cloud.bigquery.Schema.of(
+        Field.of(LegacySQLTypeName.RECORD.name(), LegacySQLTypeName.RECORD,
+            Field.of(LegacySQLTypeName.TIMESTAMP.name(), LegacySQLTypeName.TIMESTAMP)
+        ));
+    com.google.cloud.bigquery.Schema expected = com.google.cloud.bigquery.Schema.of(
+        Field.of(LegacySQLTypeName.RECORD.name(), LegacySQLTypeName.RECORD,
+            Field.of(LegacySQLTypeName.STRING.name(), LegacySQLTypeName.STRING),
+            Field.of(LegacySQLTypeName.DATE.name(), LegacySQLTypeName.DATE),
+            Field.of(LegacySQLTypeName.TIMESTAMP.name(), LegacySQLTypeName.TIMESTAMP)
+            )
+    );
+    assertUnion(makeNullable(expected), s1, s2);
+  }
+
+  @Test
+  public void testUnionizeSchemaWithNestedAndRepeatedFields() {
+    com.google.cloud.bigquery.Schema s1 = com.google.cloud.bigquery.Schema.of(
+        Field.of(LegacySQLTypeName.RECORD.name(), LegacySQLTypeName.RECORD,
+            Field.newBuilder(LegacySQLTypeName.STRING.name(), LegacySQLTypeName.STRING).setMode(Mode.REPEATED).build(),
+            Field.of(LegacySQLTypeName.RECORD.name(), LegacySQLTypeName.RECORD,
+                Field.of(LegacySQLTypeName.BYTES.name(), LegacySQLTypeName.BYTES)
+            )
+        )
+    );
+    com.google.cloud.bigquery.Schema s2 = com.google.cloud.bigquery.Schema.of(
+        Field.of(LegacySQLTypeName.RECORD.name(), LegacySQLTypeName.RECORD,
+            Field.newBuilder(LegacySQLTypeName.DATE.name(), LegacySQLTypeName.DATE).setMode(Mode.REPEATED).build(),
+            Field.of(LegacySQLTypeName.RECORD.name(), LegacySQLTypeName.RECORD,
+                Field.of(LegacySQLTypeName.FLOAT.name(), LegacySQLTypeName.FLOAT)
+            )
+        )
+    );
+
+    com.google.cloud.bigquery.Schema expected = com.google.cloud.bigquery.Schema.of(
+        Field.of(LegacySQLTypeName.RECORD.name(), LegacySQLTypeName.RECORD,
+            Field.newBuilder(LegacySQLTypeName.STRING.name(), LegacySQLTypeName.STRING).setMode(Mode.REPEATED).build(),
+            Field.of(LegacySQLTypeName.RECORD.name(), LegacySQLTypeName.RECORD,
+                Field.of(LegacySQLTypeName.BYTES.name(), LegacySQLTypeName.BYTES),
+                Field.of(LegacySQLTypeName.FLOAT.name(), LegacySQLTypeName.FLOAT)
+            ),
+            Field.newBuilder(LegacySQLTypeName.DATE.name(), LegacySQLTypeName.DATE).setMode(Mode.REPEATED).build()
+        )
+    );
+    assertUnion(makeNullable(expected), s1, s2);
+  }
+
+  @Test
+  public void testUnionizeSchemaNestedRelax() {
+    com.google.cloud.bigquery.Schema s1 = com.google.cloud.bigquery.Schema.of(
+        Field.of(LegacySQLTypeName.RECORD.name(), LegacySQLTypeName.RECORD,
+            Field.newBuilder(LegacySQLTypeName.STRING.name(), LegacySQLTypeName.STRING).setMode(Mode.REQUIRED).build()
+        )
+    );
+    com.google.cloud.bigquery.Schema s2 = com.google.cloud.bigquery.Schema.of(
+        Field.of(LegacySQLTypeName.RECORD.name(), LegacySQLTypeName.RECORD,
+            Field.newBuilder(LegacySQLTypeName.STRING.name(), LegacySQLTypeName.STRING).setMode(Mode.NULLABLE).build()
+        )
+    );
+    assertUnion(makeNullable(s2), s1, s2);
+  }
+
+  private com.google.cloud.bigquery.Schema makeNullable(com.google.cloud.bigquery.Schema s) {
+    return com.google.cloud.bigquery.Schema.of(
+        s.getFields().stream()
+            .map(this::makeNullable)
+            .collect(Collectors.toList())
+    );
+  }
+
+  private Field makeNullable(Field f) {
+    Field.Builder builder = f.toBuilder();
+    if (f.getSubFields() != null) {
+      List<Field> subFields = f.getSubFields().stream()
+          .map(this::makeNullable)
+          .collect(Collectors.toList());
+      builder.setType(LegacySQLTypeName.RECORD, subFields.toArray(new Field[]{})).build();
+    }
+    return builder
+        .setMode(f.getMode() == Mode.REPEATED ? Mode.REPEATED : Mode.NULLABLE)
+        .build();
+  }
+
+  private void assertUnion(com.google.cloud.bigquery.Schema expected,
+      com.google.cloud.bigquery.Schema schema1, com.google.cloud.bigquery.Schema schema2) {
+    SchemaManager sm = createSchemaManager(true, true, true);
+    assertEquals(
+        expected, sm.unionizeSchemas(schema1, schema2)
+    );
+  }
+
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
 }

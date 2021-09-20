@@ -21,6 +21,7 @@ package com.wepay.kafka.connect.bigquery;
 
 import com.google.cloud.bigquery.BigQuery;
 import com.wepay.kafka.connect.bigquery.config.BigQuerySinkConfig;
+<<<<<<< HEAD
 import com.wepay.kafka.connect.bigquery.config.BigQuerySinkTaskConfig;
 import com.wepay.kafka.connect.bigquery.exception.SinkConfigConnectException;
 import com.wepay.kafka.connect.bigquery.utils.Version;
@@ -28,6 +29,20 @@ import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.common.config.ConfigException;
 import org.apache.kafka.connect.connector.Task;
 import org.apache.kafka.connect.sink.SinkConnector;
+=======
+
+import com.wepay.kafka.connect.bigquery.config.BigQuerySinkTaskConfig;
+import com.wepay.kafka.connect.bigquery.exception.SinkConfigConnectException;
+
+import com.wepay.kafka.connect.bigquery.utils.Version;
+
+import org.apache.kafka.common.config.ConfigDef;
+import org.apache.kafka.common.config.ConfigException;
+
+import org.apache.kafka.connect.connector.Task;
+import org.apache.kafka.connect.sink.SinkConnector;
+
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,10 +60,14 @@ public class BigQuerySinkConnector extends SinkConnector {
   private final SchemaManager testSchemaManager;
 
   public static final String  GCS_BQ_TASK_CONFIG_KEY = "GCSBQTask";
+<<<<<<< HEAD
   public  Boolean EnableMultiproject = false;
   public  String storageDataset = null;
   public  String storageProjectName = null;
   public static String tempTableId = "";
+=======
+
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
   public BigQuerySinkConnector() {
     testBigQuery = null;
     testSchemaManager = null;
@@ -83,6 +102,7 @@ public class BigQuerySinkConnector extends SinkConnector {
     try {
       configProperties = properties;
       config = new BigQuerySinkConfig(properties);
+<<<<<<< HEAD
       tempTableId = configProperties.get("intermediateTableSuffix");
       storageDataset=configProperties.get("storageDataset");
       storageProjectName=configProperties.get("storageProjectName");
@@ -91,6 +111,8 @@ public class BigQuerySinkConnector extends SinkConnector {
       {
         throw new NullPointerException("StorageDataset & storageProjectName shouldn't empty when EnableMultiproject is true");
       }
+=======
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
     } catch (ConfigException err) {
       throw new SinkConfigConnectException(
           "Couldn't start BigQuerySinkConnector due to configuration error",
