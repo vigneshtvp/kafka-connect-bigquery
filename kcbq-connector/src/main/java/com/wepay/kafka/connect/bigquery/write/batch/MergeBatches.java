@@ -30,7 +30,10 @@ import com.wepay.kafka.connect.bigquery.exception.ExpectedInterruptException;
 import com.wepay.kafka.connect.bigquery.utils.FieldNameSanitizer;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
+<<<<<<< HEAD
+=======
 import org.apache.kafka.connect.errors.ConnectException;
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
 import org.apache.kafka.connect.sink.SinkRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,6 +60,10 @@ public class MergeBatches {
   private final ConcurrentMap<TableId, AtomicInteger> batchNumbers;
   private final ConcurrentMap<TableId, ConcurrentMap<Integer, Batch>> batches;
   private final Map<TopicPartition, Long> offsets;
+<<<<<<< HEAD
+  //private BigQuerySinkTaskConfig config;
+=======
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
 
   @VisibleForTesting
   public static void setStreamingBufferAvailabilityWait(long waitMs) {
@@ -131,10 +138,30 @@ public class MergeBatches {
     return result;
   }
 
+<<<<<<< HEAD
+  public TableId destinationTableFor(TableId intermediateTable,Boolean enableMultiproject,String storageProjectName,String storageDataset ) {
+
+    if(enableMultiproject==true)
+    {
+      return TableId.of(storageProjectName,
+              storageDataset,
+              intermediateToDestinationTables.get(intermediateTable).getTable());
+    }
+    else
+    {
+      return intermediateToDestinationTables.get(intermediateTable);
+    }
+  }
+
+
+
+
+=======
   public TableId destinationTableFor(TableId intermediateTable) {
     return intermediateToDestinationTables.get(intermediateTable);
   }
 
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
   /**
    * Find a batch number for the record, insert that number into the converted value, record the
    * offset for that record, and return the total size of that batch.

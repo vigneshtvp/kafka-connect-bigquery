@@ -88,10 +88,12 @@ public abstract class LogicalTypeConverter {
     return bqTimestampFormat;
   }
 
+
   protected SimpleDateFormat getBqTimeFormat() {
     SimpleDateFormat bqTimestampFormat = new SimpleDateFormat("HH:mm:ss.SSS");
     bqTimestampFormat.setTimeZone(utcTimeZone);
     return bqTimestampFormat;
+
   }
 
   protected static SimpleDateFormat getBQDateFormat() {

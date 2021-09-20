@@ -19,6 +19,7 @@
 
 package com.wepay.kafka.connect.bigquery;
 
+
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.Field;
 import com.google.cloud.bigquery.FieldList;
@@ -60,16 +61,23 @@ public class MergeQueries {
   private final BigQuery bigQuery;
   private final SchemaManager schemaManager;
   private final SinkTaskContext context;
+  private final boolean enableMultiproject;
+  private final String storageProjectName ;
+  private final String storageDataset;
+
 
   public MergeQueries(BigQuerySinkTaskConfig config,
                       MergeBatches mergeBatches,
                       KCBQThreadPoolExecutor executor,
                       BigQuery bigQuery,
                       SchemaManager schemaManager,
-                      SinkTaskContext context) {
+                      SinkTaskContext context,
+                      Boolean enableMultiproject,
+                      String storageProjectName,String storageDataset ) {
     this(
       config.getKafkaKeyFieldName().orElseThrow(() ->
-          new ConnectException("Kafka key field must be configured when upsert/delete is enabled")
+        new ConnectException("Kafka key field must be configured when upsert/delete is enabled")
+
       ),
       config.getBoolean(config.BIGQUERY_PARTITION_DECORATOR_CONFIG),
       config.getBoolean(config.UPSERT_ENABLED_CONFIG),
@@ -78,7 +86,10 @@ public class MergeQueries {
       executor,
       bigQuery,
       schemaManager,
-      context
+      context,
+      enableMultiproject,
+      storageProjectName,
+      storageDataset
     );
   }
 
@@ -91,7 +102,8 @@ public class MergeQueries {
                KCBQThreadPoolExecutor executor,
                BigQuery bigQuery,
                SchemaManager schemaManager,
-               SinkTaskContext context) {
+               SinkTaskContext context, boolean enableMultiproject, String storageProjectName,String storageDataset) {
+
     this.keyFieldName = keyFieldName;
     this.insertPartitionTime = insertPartitionTime;
     this.upsertEnabled = upsertEnabled;
@@ -101,6 +113,10 @@ public class MergeQueries {
     this.bigQuery = bigQuery;
     this.schemaManager = schemaManager;
     this.context = context;
+    this.enableMultiproject = enableMultiproject;
+    this.storageProjectName = storageProjectName;
+    this.storageDataset = storageDataset;
+
   }
 
   public void mergeFlushAll() {
@@ -109,44 +125,45 @@ public class MergeQueries {
   }
 
   public void mergeFlush(TableId intermediateTable) {
-    final TableId destinationTable = mergeBatches.destinationTableFor(intermediateTable);
+    final TableId destinationTable = mergeBatches.destinationTableFor(intermediateTable ,enableMultiproject,storageProjectName,storageDataset);
     final int batchNumber = mergeBatches.incrementBatch(intermediateTable);
     logger.trace("Triggering merge flush from {} to {} for batch {}",
-        intTable(intermediateTable), destTable(destinationTable), batchNumber);
-
+      intTable(intermediateTable), destTable(destinationTable), batchNumber);
     executor.execute(() -> {
       try {
         mergeFlush(intermediateTable, destinationTable, batchNumber);
       } catch (InterruptedException e) {
         throw new ExpectedInterruptException(String.format(
-            "Interrupted while performing merge flush of batch %d from %s to %s",
-            batchNumber, intTable(intermediateTable), destTable(destinationTable)));
+          "Interrupted while performing merge flush of batch %d from %s to %s",
+          batchNumber, intTable(intermediateTable), destTable(destinationTable)));
+
       }
     });
   }
 
   private void mergeFlush(
-      TableId intermediateTable, TableId destinationTable, int batchNumber
+    TableId intermediateTable, TableId destinationTable, int batchNumber
   ) throws InterruptedException{
     // If there are rows to flush in this batch, flush them
     if (mergeBatches.prepareToFlush(intermediateTable, batchNumber)) {
       logger.debug("Running merge query on batch {} from {}",
-          batchNumber, intTable(intermediateTable));
+        batchNumber, intTable(intermediateTable));
       String mergeFlushQuery = mergeFlushQuery(intermediateTable, destinationTable, batchNumber);
       logger.trace(mergeFlushQuery);
       bigQuery.query(QueryJobConfiguration.of(mergeFlushQuery));
       logger.trace("Merge from {} to {} completed",
-          intTable(intermediateTable), destTable(destinationTable));
-
+        intTable(intermediateTable), destTable(destinationTable));
       logger.debug("Recording flush success for batch {} from {}",
-          batchNumber, intTable(intermediateTable));
+        batchNumber, intTable(intermediateTable));
+
       mergeBatches.recordSuccessfulFlush(intermediateTable, batchNumber);
 
       // Commit those offsets ASAP
       context.requestCommit();
 
       logger.info("Completed merge flush of batch {} from {} to {}",
-          batchNumber, intTable(intermediateTable), destTable(destinationTable));
+        batchNumber, intTable(intermediateTable), destTable(destinationTable));
+
     }
 
     // After, regardless of whether we flushed or not, clean up old batches from the intermediate
@@ -199,6 +216,7 @@ public class MergeQueries {
         );
    */
   private String upsertDeleteMergeFlushQuery(
+
       TableId intermediateTable, TableId destinationTable, int batchNumber, Schema intermediateSchema
   ) {
     List<String> keyFields = listFields(
@@ -265,11 +283,13 @@ public class MergeQueries {
         );
    */
   private String upsertMergeFlushQuery(
+
       TableId intermediateTable, TableId destinationTable, int batchNumber, Schema intermediateSchema
   ) {
     List<String> keyFields = listFields(
         intermediateSchema.getFields().get(INTERMEDIATE_TABLE_KEY_FIELD_NAME).getSubFields(),
         INTERMEDIATE_TABLE_KEY_FIELD_NAME + "."
+
     );
 
     List<String> valueColumns = valueColumns(intermediateSchema);
@@ -278,6 +298,7 @@ public class MergeQueries {
     final String i = INTERMEDIATE_TABLE_ITERATION_FIELD_NAME;
     final String value = INTERMEDIATE_TABLE_VALUE_FIELD_NAME;
     final String batch = INTERMEDIATE_TABLE_BATCH_NUMBER_FIELD;
+
 
     return "MERGE " + table(destinationTable) + " "
         + "USING ("
@@ -358,11 +379,12 @@ public class MergeQueries {
       );
    */
   private String deleteMergeFlushQuery(
-      TableId intermediateTable, TableId destinationTable, int batchNumber, Schema intermediateSchema
+    TableId intermediateTable, TableId destinationTable, int batchNumber, Schema intermediateSchema
   ) {
     List<String> keyFields = listFields(
-        intermediateSchema.getFields().get(INTERMEDIATE_TABLE_KEY_FIELD_NAME).getSubFields(),
-        INTERMEDIATE_TABLE_KEY_FIELD_NAME + "."
+      intermediateSchema.getFields().get(INTERMEDIATE_TABLE_KEY_FIELD_NAME).getSubFields(),
+      INTERMEDIATE_TABLE_KEY_FIELD_NAME + "."
+
     );
 
     List<String> valueColumns = valueColumns(intermediateSchema);
@@ -407,10 +429,14 @@ public class MergeQueries {
             + valueColumns.stream().map(col -> "src." + value + "." + col).collect(Collectors.joining(", "))
           + ");";
   }
+    private String table(TableId tableId) {
+        if (enableMultiproject == false || tableId.getTable().indexOf(BigQuerySinkConnector.tempTableId) != -1) {
+            return String.format("`%s`.`%s`", tableId.getDataset(), tableId.getTable());
+        } else {
+            return String.format("`%s`.`%s`.`%s`", storageProjectName, storageDataset, tableId.getTable());
+        }
+    }
 
-  private String table(TableId tableId) {
-    return String.format("`%s`.`%s`", tableId.getDataset(), tableId.getTable());
-  }
 
   private List<String> valueColumns(Schema intermediateTableSchema) {
     return intermediateTableSchema.getFields().get(INTERMEDIATE_TABLE_VALUE_FIELD_NAME).getSubFields()

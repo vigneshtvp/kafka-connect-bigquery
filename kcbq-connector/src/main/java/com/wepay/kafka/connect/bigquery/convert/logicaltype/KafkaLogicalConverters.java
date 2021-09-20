@@ -24,7 +24,9 @@ import com.google.cloud.bigquery.LegacySQLTypeName;
 import org.apache.kafka.connect.data.Date;
 import org.apache.kafka.connect.data.Decimal;
 import org.apache.kafka.connect.data.Schema;
+
 import org.apache.kafka.connect.data.Time;
+
 import org.apache.kafka.connect.data.Timestamp;
 
 import java.math.BigDecimal;

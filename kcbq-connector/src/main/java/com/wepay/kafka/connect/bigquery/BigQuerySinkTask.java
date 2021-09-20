@@ -19,12 +19,17 @@
 
 package com.wepay.kafka.connect.bigquery;
 
+<<<<<<< HEAD
+import com.google.cloud.bigquery.*;
+import com.google.cloud.bigquery.InsertAllRequest.RowToInsert;
+=======
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.InsertAllRequest.RowToInsert;
 import com.google.cloud.bigquery.StandardTableDefinition;
 import com.google.cloud.bigquery.TableId;
 import com.google.cloud.bigquery.Table;
 import com.google.cloud.bigquery.TimePartitioning;
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
 import com.google.cloud.bigquery.TimePartitioning.Type;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.BucketInfo;
@@ -34,6 +39,15 @@ import com.wepay.kafka.connect.bigquery.api.SchemaRetriever;
 import com.wepay.kafka.connect.bigquery.config.BigQuerySinkConfig;
 import com.wepay.kafka.connect.bigquery.config.BigQuerySinkTaskConfig;
 import com.wepay.kafka.connect.bigquery.convert.SchemaConverter;
+<<<<<<< HEAD
+import com.wepay.kafka.connect.bigquery.exception.SinkConfigConnectException;
+import com.wepay.kafka.connect.bigquery.utils.FieldNameSanitizer;
+import com.wepay.kafka.connect.bigquery.utils.PartitionedTableId;
+import com.wepay.kafka.connect.bigquery.utils.SinkRecordConverter;
+import com.wepay.kafka.connect.bigquery.utils.Version;
+import com.wepay.kafka.connect.bigquery.write.batch.*;
+import com.wepay.kafka.connect.bigquery.write.row.*;
+=======
 import com.wepay.kafka.connect.bigquery.utils.SinkRecordConverter;
 import com.wepay.kafka.connect.bigquery.exception.SinkConfigConnectException;
 import com.wepay.kafka.connect.bigquery.utils.FieldNameSanitizer;
@@ -49,6 +63,7 @@ import com.wepay.kafka.connect.bigquery.write.row.BigQueryWriter;
 import com.wepay.kafka.connect.bigquery.write.row.GCSToBQWriter;
 import com.wepay.kafka.connect.bigquery.write.row.SimpleBigQueryWriter;
 import com.wepay.kafka.connect.bigquery.write.row.UpsertDeleteBigQueryWriter;
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.config.ConfigException;
@@ -60,6 +75,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
+<<<<<<< HEAD
+import java.util.*;
+import java.util.concurrent.*;
+=======
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -72,6 +91,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.Optional;
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.wepay.kafka.connect.bigquery.utils.TableNameUtils.intTable;
@@ -367,7 +387,11 @@ public class BigQuerySinkTask extends SinkTask {
     Optional<String> timestampPartitionFieldName = config.getTimestampPartitionFieldName();
     Optional<Long> partitionExpiration = config.getPartitionExpirationMs();
     Optional<List<String>> clusteringFieldName = config.getClusteringPartitionFieldName();
+<<<<<<< HEAD
+    Type timePartitioningType = config.getTimePartitioningType();
+=======
     Optional<TimePartitioning.Type> timePartitioningType = config.getTimePartitioningType();
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
     boolean allowNewBQFields = config.getBoolean(config.ALLOW_NEW_BIGQUERY_FIELDS_CONFIG);
     boolean allowReqFieldRelaxation = config.getBoolean(config.ALLOW_BIGQUERY_REQUIRED_FIELD_RELAXATION_CONFIG);
     boolean allowSchemaUnionization = config.getBoolean(config.ALLOW_SCHEMA_UNIONIZATION_CONFIG);
@@ -390,7 +414,11 @@ public class BigQuerySinkTask extends SinkTask {
                                             retry,
                                             retryWait,
                                             autoCreateTables,
+<<<<<<< HEAD
+                                            mergeBatches.intermediateToDestinationTables(), config);
+=======
                                             mergeBatches.intermediateToDestinationTables());
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
     } else if (autoCreateTables || allowNewBigQueryFields || allowRequiredFieldRelaxation) {
       return new AdaptiveBigQueryWriter(bigQuery,
                                         getSchemaManager(),
@@ -487,7 +515,13 @@ public class BigQuerySinkTask extends SinkTask {
       startGCSToBQLoadTask();
     } else if (upsertDelete) {
       mergeQueries =
+<<<<<<< HEAD
+          new MergeQueries(config, mergeBatches, executor, getBigQuery(), getSchemaManager(), context, config.getBoolean(config.Multiproject_DATASET_CONFIG),
+                  config.getString(config.PROJECT_DATASET_CONFIG),
+                  config.getString(config.STORAGE_DATASET_CONFIG));
+=======
           new MergeQueries(config, mergeBatches, executor, getBigQuery(), getSchemaManager(), context);
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
       maybeStartMergeFlushTask();
     }
 

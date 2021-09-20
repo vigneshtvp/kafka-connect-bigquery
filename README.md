@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Kafka Connect BigQuery Connector
 
 [![Build Status](https://img.shields.io/travis/wepay/kafka-connect-bigquery.svg?style=flat-square)](https://travis-ci.org/wepay/kafka-connect-bigquery)
@@ -240,3 +241,7 @@ verify its accuracy, it will be returned in ascending order based on that "row" 
   [Schema Registry]: https://github.com/confluentinc/schema-registry
   [Semantic Versioning]: http://semver.org
   [Zookeeper]: https://zookeeper.apache.org
+=======
+# kcbq-parent
+kcbq-parent
+>>>>>>> Initial commit

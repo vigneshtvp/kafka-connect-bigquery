@@ -20,6 +20,7 @@
 package com.wepay.kafka.connect.bigquery.config;
 
 import static org.junit.Assert.assertEquals;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -34,6 +35,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Map;
+
 import java.util.Optional;
 
 public class BigQuerySinkConfigTest {
@@ -90,6 +92,7 @@ public class BigQuerySinkConfigTest {
 
     for (TimePartitioning.Type type : TimePartitioning.Type.values()) {
       configProperties.put(BigQuerySinkConfig.TIME_PARTITIONING_TYPE_CONFIG, type.name());
+
       Optional<TimePartitioning.Type> timePartitioningType = new BigQuerySinkConfig(configProperties).getTimePartitioningType();
       assertTrue(timePartitioningType.isPresent());
       assertEquals(type, timePartitioningType.get());
@@ -98,6 +101,7 @@ public class BigQuerySinkConfigTest {
     configProperties.put(BigQuerySinkConfig.TIME_PARTITIONING_TYPE_CONFIG, BigQuerySinkConfig.TIME_PARTITIONING_TYPE_NONE);
     Optional<TimePartitioning.Type> timePartitioningType = new BigQuerySinkConfig(configProperties).getTimePartitioningType();
     assertFalse(timePartitioningType.isPresent());
+
   }
 
   @Test(expected = ConfigException.class)

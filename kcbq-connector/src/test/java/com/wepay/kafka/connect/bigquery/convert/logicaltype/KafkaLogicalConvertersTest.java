@@ -27,7 +27,10 @@ import com.google.cloud.bigquery.LegacySQLTypeName;
 import com.wepay.kafka.connect.bigquery.convert.logicaltype.KafkaLogicalConverters.DateConverter;
 import com.wepay.kafka.connect.bigquery.convert.logicaltype.KafkaLogicalConverters.DecimalConverter;
 import com.wepay.kafka.connect.bigquery.convert.logicaltype.KafkaLogicalConverters.TimestampConverter;
+<<<<<<< HEAD
+=======
 import com.wepay.kafka.connect.bigquery.convert.logicaltype.KafkaLogicalConverters.TimeConverter;
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
 
 import org.apache.kafka.connect.data.Schema;
 
@@ -102,6 +105,8 @@ public class KafkaLogicalConvertersTest {
 
     assertEquals("2017-03-01 22:20:38.808", formattedTimestamp);
   }
+<<<<<<< HEAD
+=======
 
 
   @Test
@@ -130,4 +135,5 @@ public class KafkaLogicalConvertersTest {
 
     assertEquals("22:20:38.808", formattedTimestamp);
   }
+>>>>>>> f3a3b7c15a8c32f24f1b37fbfeb93e001f7dca1d
 }

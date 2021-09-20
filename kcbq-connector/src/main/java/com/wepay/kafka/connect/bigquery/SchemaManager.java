@@ -51,6 +51,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+
 import static com.google.common.base.Preconditions.checkState;
 
 /**
@@ -356,6 +357,7 @@ public class SchemaManager {
     return null;
   }
 
+
   private com.google.cloud.bigquery.Schema convertRecordSchema(SinkRecord record) {
     Schema kafkaValueSchema = schemaRetriever.retrieveValueSchema(record);
     Schema kafkaKeySchema = kafkaKeyFieldName.isPresent() ? schemaRetriever.retrieveKeySchema(record) : null;
@@ -378,6 +380,7 @@ public class SchemaManager {
     }
     return currentSchema;
   }
+
 
   private Field unionizeFields(Field firstField, Field secondField) {
     if (secondField == null) {
@@ -417,8 +420,10 @@ public class SchemaManager {
    * @param secondSchema The second BigQuery schema to unionize
    * @return The resulting unionized BigQuery schema
    */
+
   // VisibleForTesting
   com.google.cloud.bigquery.Schema unionizeSchemas(
+
       com.google.cloud.bigquery.Schema firstSchema, com.google.cloud.bigquery.Schema secondSchema) {
     Map<String, Field> firstSchemaFields = schemaFields(firstSchema);
     Map<String, Field> secondSchemaFields = schemaFields(secondSchema);
@@ -454,6 +459,7 @@ public class SchemaManager {
         }
       }
     });
+
   }
 
   private void validateSchemaChange(
@@ -514,6 +520,7 @@ public class SchemaManager {
    * @param records The records used to get the unionized table description
    * @return The resulting table description
    */
+
   @VisibleForTesting
   String getUnionizedTableDescription(List<SinkRecord> records) {
     String tableDescription = null;
@@ -526,6 +533,7 @@ public class SchemaManager {
     }
     return tableDescription;
   }
+
 
   private Map<String, Field> subFields(Field parent) {
     Map<String, Field> result = new LinkedHashMap<>();
@@ -569,6 +577,7 @@ public class SchemaManager {
       // pseudocolumn can be queried to filter out rows that are still in the streaming buffer
       builder.setTimePartitioning(TimePartitioning.of(Type.DAY));
     } else if (createSchema) {
+
       timePartitioningType.ifPresent(partitioningType -> {
         TimePartitioning.Builder timePartitioningBuilder = TimePartitioning.of(partitioningType).toBuilder();
         timestampPartitionFieldName.ifPresent(timePartitioningBuilder::setField);
@@ -683,6 +692,7 @@ public class SchemaManager {
 
   private com.google.cloud.bigquery.Schema readTableSchema(TableId table) {
     logger.trace("Reading schema for {}", table(table));
+
     return Optional.ofNullable(bigQuery.getTable(table))
         .map(t -> t.getDefinition().getSchema())
         .orElse(null);
